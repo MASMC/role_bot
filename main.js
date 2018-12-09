@@ -20,6 +20,9 @@ console.log("Blacklisted user list loaded");
 data = fs.readFileSync("./Data/roles.json");
 let roles = JSON.parse(data);
 console.log("Role list loaded");
+data = fs.readFileSync("./Data/strings.json");
+let strings = JSON.parse(data);
+console.log("String list loaded");
 
 console.log("Data loaded, beginning setup");
 
@@ -68,7 +71,7 @@ function randomString() {
     return "Test String";
 }
 
-// Watch for file change in blacklist
+// Watch for file change in blacklist, update if change detected
 fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
     fs.readFile("./Data/blacklist.json", (err, data) => {
         blacklist = JSON.parse(data);
@@ -76,10 +79,18 @@ fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
     });
 });
 
-// Watch for change in roles
+// Watch for change in roles, update if change detected
 fs.watch('./Data/roles.json', (eventType, filename) => {
     fs.readFile("./Data/roles.json", (err, data) => {
         roles = JSON.parse(data);
         console.log("Roles updated!");
+    });
+});
+
+// Watch for change in strings, update if change detected
+fs.watch('./Data/strings.json', (eventType, filename) => {
+    fs.readFile("./Data/strings.json", (err, data) => {
+        strings = JSON.parse(data);
+        console.log("Strings updated!");
     });
 });
