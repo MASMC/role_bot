@@ -21,10 +21,17 @@ data = fs.readFileSync("./Data/roles.json");
 let roles = JSON.parse(data);
 console.log("Role list loaded");
 data = fs.readFileSync("./Data/strings.json");
-let strings = JSON.parse(data);
+let stringsObj = JSON.parse(data);
+let strings = stringsObj.strings;
 console.log("String list loaded");
 
 console.log("Data loaded, beginning setup");
+
+// // DEBUG FUNCTION
+// for(let i = 0; i < strings.length; i++)
+// {
+//     console.log(strings[i]);
+// }
 
 // Global templates, such as error embed
 const pfp = "";
@@ -40,8 +47,8 @@ embedTemplate.setAuthor(config.name, pfp, config.website)
 
 // When client is ready, do this!
 client.once('ready', () => {
-    console.log("Client connected to Discord. Awaiting commands!");
     console.log(`Client name: ${config.name}\nClient config location: ../Config/config.json`);
+    console.log("Client connected to Discord. Awaiting commands!");
 });
 
 // Message handling. We'll throw this at a modular function handler later
@@ -60,6 +67,10 @@ client.on('message', (message) => {
         {
             message.channel.send("Pong!");
         }
+        else if(message.content.startsWith("/string"))
+        {
+            message.channel.send("Your string is: " + randomString());
+        }
     }
 });
 
@@ -68,7 +79,11 @@ client.login(credentials.auth_token);
 
 // Functions required for running
 function randomString() {
-    return "Test String";
+    let len = strings.length;
+    let index = Math.floor(Math.random() * len);
+    let str = strings[index];
+    // console.log(str);
+    return str;
 }
 
 // Watch for file change in blacklist, update if change detected
@@ -90,7 +105,8 @@ fs.watch('./Data/roles.json', (eventType, filename) => {
 // Watch for change in strings, update if change detected
 fs.watch('./Data/strings.json', (eventType, filename) => {
     fs.readFile("./Data/strings.json", (err, data) => {
-        strings = JSON.parse(data);
+        stringsObj = JSON.parse(data);
+        strings = stringsObj.strings;
         console.log("Strings updated!");
     });
 });
