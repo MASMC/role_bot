@@ -1,5 +1,6 @@
 // Import required APIs for bot to function
 const Discord = require("discord.js");
+require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
 const fs = require("fs"); // fs is NOT required to be installed through node
 
 // Create any objects we need from the APIs
@@ -33,13 +34,8 @@ console.log("Data loaded, beginning setup");
 //     console.log(strings[i]);
 // }
 
-// Global templates, such as error embed
+// Global vars
 const pfp = "";
-const errorTemplate = new Discord.RichEmbed();
-errorTemplate.setAuthor(config.name, pfp, config.website)
-.setColor([255, 0, 0])
-.setDescription("Uh oh! We've encountered an error!")
-.setFooter(randomString(), pfp);
 
 const embedTemplate = new Discord.RichEmbed();
 embedTemplate.setAuthor(config.name, pfp, config.website)
@@ -63,6 +59,11 @@ client.on('message', (message) => {
     }
     else
     {
+        if(message.content.substring(0,1) == "/")
+        {
+            console.log(`${message.author.username} has invoked command: ${message.content}`);
+        }
+
         if(message.content.startsWith("/ping"))
         {
             message.channel.send("Pong!");
@@ -70,6 +71,39 @@ client.on('message', (message) => {
         else if(message.content.startsWith("/string"))
         {
             message.channel.send("Your string is: " + randomString());
+        }
+        else if(message.content.startsWith("/testError"))
+        {
+            if(message.content.indexOf(' ') != -1)
+            {
+                let num = message.content.substring(message.content.indexOf(' ') + 1);
+                message.channel.send(generateError(num));
+            }
+            else
+            {
+                message.channel.send(generateError(402));
+            }
+        }
+        else if(message.content.startsWith("/testEmbed"))
+        {
+            if(message.content.indexOf(' ') != -1)
+            {
+                let tokens = message.content.split(' ');
+                // console.log(tokens);
+                if(tokens.length > 2)
+                {
+                    // console.log(tokens[1] + " " + tokens[2]);
+                    message.channel.send(generateEmbed(tokens[1], tokens[2]));
+                }
+                else if(tokens.length == 2)
+                {
+                    message.channel.send(generateEmbed(tokens[1]));
+                }
+                else
+                {
+                    message.channel.send(generateEmbed("Default Description"));
+                }
+            }
         }
     }
 });
@@ -84,6 +118,39 @@ function randomString() {
     let str = strings[index];
     // console.log(str);
     return str;
+}
+
+// Generate an error embed
+function generateError(code) {
+    let embed = new Discord.RichEmbed();
+    embed.setAuthor(config.name, pfp, config.website)
+    .setFooter(randomString(), pfp);
+    if(code == 402)
+    {
+        embed.setColor([0,255,0])
+        .setDescription("All is well!")
+        .addField("Error Code:", code, true)
+        .addField("Error Description:", "All is well!");
+    }
+    else
+    {
+        embed.setColor([255,0,0])
+        .setDescription("Uh oh! We've encountered an error!")
+        .addField("Error Code:", code, true)
+        .addField("Error Description:", "UNKNOWN");
+    }
+    return embed;
+}
+
+function generateEmbed(desc, color)
+{
+    // console.log("2 arg");
+    let embed = new Discord.RichEmbed();
+    embed.setAuthor(config.name, pfp, config.website)
+    .setColor(parseInt(color, 16))
+    .setDescription(desc)
+    .setFooter(randomString(), pfp);
+    return embed;
 }
 
 // Watch for file change in blacklist, update if change detected
