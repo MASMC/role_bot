@@ -3,6 +3,10 @@ const Discord = require("discord.js");
 require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
 const fs = require("fs"); // fs is NOT required to be installed through node
 
+// Import custom modules
+const Handler = require("./Modules/handler.js");
+const handler = new Handler();
+
 // Create any objects we need from the APIs
 var client = new Discord.Client();
 
@@ -11,22 +15,22 @@ let data; // Global variable data, to read files into. USed to parse to JSON for
 data = fs.readFileSync("./Credentials/credentials.json");
 const credentials = JSON.parse(data);
 data = fs.readFileSync("./Config/config.json");
-const config = JSON.parse(data);
-console.log("Credentials and configs loaded.");
+let config = JSON.parse(data);
+console.log("Credentials and configs loaded in main.js");
 
 // First read of storage JSON files. We do this just so that they're loaded and ready to go.
 data = fs.readFileSync("./Data/blacklist.json");
 let blacklist = JSON.parse(data);
-console.log("Blacklisted user list loaded");
+console.log("Blacklisted user list loaded in main.js");
 data = fs.readFileSync("./Data/roles.json");
 let roles = JSON.parse(data);
-console.log("Role list loaded");
+console.log("Role list loaded in main.js");
 data = fs.readFileSync("./Data/strings.json");
 let stringsObj = JSON.parse(data);
 let strings = stringsObj.strings;
-console.log("String list loaded");
+console.log("String list loaded in main.js");
 
-console.log("Data loaded, beginning setup");
+console.log("Data loaded in main.js, beginning setup");
 
 // // DEBUG FUNCTION
 // for(let i = 0; i < strings.length; i++)
@@ -34,12 +38,6 @@ console.log("Data loaded, beginning setup");
 //     console.log(strings[i]);
 // }
 
-// Global vars
-const pfp = "";
-
-const embedTemplate = new Discord.RichEmbed();
-embedTemplate.setAuthor(config.name, pfp, config.website)
-.setFooter(randomString(), pfp);
 
 // When client is ready, do this!
 client.once('ready', () => {
@@ -59,99 +57,83 @@ client.on('message', (message) => {
     }
     else
     {
-        if(message.content.substring(0,1) == "/")
-        {
-            console.log(`${message.author.username} has invoked command: ${message.content}`);
-        }
-
-        if(message.content.startsWith("/ping"))
-        {
-            message.channel.send("Pong!");
-        }
-        else if(message.content.startsWith("/string"))
-        {
-            message.channel.send("Your string is: " + randomString());
-        }
-        else if(message.content.startsWith("/testError"))
-        {
-            if(message.content.indexOf(' ') != -1)
-            {
-                let num = message.content.substring(message.content.indexOf(' ') + 1);
-                message.channel.send(generateError(num));
-            }
-            else
-            {
-                message.channel.send(generateError(402));
-            }
-        }
-        else if(message.content.startsWith("/testEmbed"))
-        {
-            if(message.content.indexOf(' ') != -1)
-            {
-                let tokens = message.content.split(' ');
-                // console.log(tokens);
-                if(tokens.length > 2)
-                {
-                    // console.log(tokens[1] + " " + tokens[2]);
-                    message.channel.send(generateEmbed(tokens[1], tokens[2]));
-                }
-                else if(tokens.length == 2)
-                {
-                    message.channel.send(generateEmbed(tokens[1]));
-                }
-                else
-                {
-                    message.channel.send(generateEmbed("Default Description"));
-                }
-            }
-        }
+        // if(message.content.substring(0,1) == "/")
+        // {
+        //     console.log(`${message.author.username} has invoked command: ${message.content}`);
+        // }
+        //
+        // if(message.content.startsWith("/ping"))
+        // {
+        //     message.channel.send("Pong!");
+        // }
+        // else if(message.content.startsWith("/string"))
+        // {
+        //     message.channel.send("Your string is: " + randomString());
+        // }
+        // else if(message.content.startsWith("/testError"))
+        // {
+        //     if(message.content.indexOf(' ') != -1)
+        //     {
+        //         let num = message.content.substring(message.content.indexOf(' ') + 1);
+        //         message.channel.send(generateError(num));
+        //     }
+        //     else
+        //     {
+        //         message.channel.send(generateError(402));
+        //     }
+        // }
+        // else if(message.content.startsWith("/testEmbed"))
+        // {
+        //     if(message.content.indexOf(' ') != -1)
+        //     {
+        //         let tokens = message.content.split(' ');
+        //         // console.log(tokens);
+        //         if(tokens.length > 2)
+        //         {
+        //             // console.log(tokens[1] + " " + tokens[2]);
+        //             message.channel.send(generateEmbed(tokens[1], tokens[2]));
+        //         }
+        //         else if(tokens.length == 2)
+        //         {
+        //             message.channel.send(generateEmbed(tokens[1]));
+        //         }
+        //         else
+        //         {
+        //             message.channel.send(generateEmbed("Default Description"));
+        //         }
+        //     }
+        // }
+        // else if(message.content.startsWith("/updateConfigs"))
+        // {
+        //     data = fs.readFileSync("./Config/config.json");
+        //     config = JSON.parse(data);
+        //     console.log("Configs updated via command!");
+        //     message.channel.send("👌");
+        // }
+        // else if(message.content.startsWith("/reloadStrings"))
+        // {
+        //     data = fs.readFileSync("./Data/strings.json");
+        //     strings = JSON.parse(data);
+        //     console.log("Strings reloaded via command!");
+        //     message.channel.send("👌");
+        // }
+        // else if(message.content.startsWith("/reloadBlacklist"))
+        // {
+        //     data = fs.readFileSync("./Data/blacklist.json");
+        //     blacklist = JSON.parse(data);
+        //     console.log("Blacklist reloaded via command!");
+        //     message.channel.send("👌");
+        // }
+        // else if(message.content.startsWith("/handlerTest"))
+        // {
+        //     handler.handle(message);
+        // }
+        handler.handle(message);
     }
 });
 
 // Make sure the client logs in
 client.login(credentials.auth_token);
-
-// Functions required for running
-function randomString() {
-    let len = strings.length;
-    let index = Math.floor(Math.random() * len);
-    let str = strings[index];
-    // console.log(str);
-    return str;
-}
-
-// Generate an error embed
-function generateError(code) {
-    let embed = new Discord.RichEmbed();
-    embed.setAuthor(config.name, pfp, config.website)
-    .setFooter(randomString(), pfp);
-    if(code == 402)
-    {
-        embed.setColor([0,255,0])
-        .setDescription("All is well!")
-        .addField("Error Code:", code, true)
-        .addField("Error Description:", "All is well!");
-    }
-    else
-    {
-        embed.setColor([255,0,0])
-        .setDescription("Uh oh! We've encountered an error!")
-        .addField("Error Code:", code, true)
-        .addField("Error Description:", "UNKNOWN");
-    }
-    return embed;
-}
-
-function generateEmbed(desc, color)
-{
-    // console.log("2 arg");
-    let embed = new Discord.RichEmbed();
-    embed.setAuthor(config.name, pfp, config.website)
-    .setColor(parseInt(color, 16))
-    .setDescription(desc)
-    .setFooter(randomString(), pfp);
-    return embed;
-}
 
 // Watch for file change in blacklist, update if change detected
 fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
