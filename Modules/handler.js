@@ -2,23 +2,19 @@
 
 const Discord = require("discord.js");
 const fs = require("fs");
+const Files = require("../Modules/files.js");
+const files = new Files();
 
 // Config JSON files. We won't modify these at all, they can be constants.
-let data; // Global variable data, to read files into. USed to parse to JSON for the real files
-data = fs.readFileSync("./Config/config.json");
-let config = JSON.parse(data);
+let config = files.updateConfigs();
 console.log("Config loaded in handler.js");
 
 // First read of storage JSON files. We do this just so that they're loaded and ready to go.
-data = fs.readFileSync("./Data/blacklist.json");
-let blacklist = JSON.parse(data);
+let blacklist = files.updateBlacklist();
 console.log("Blacklisted user list loaded in handler.js");
-data = fs.readFileSync("./Data/roles.json");
-let roles = JSON.parse(data);
+let roles = files.updateRoles();
 console.log("Role list loaded in handler.js");
-data = fs.readFileSync("./Data/strings.json");
-let stringsObj = JSON.parse(data);
-let strings = stringsObj.strings;
+let strings = files.updateStrings();
 console.log("String list loaded in handler.js");
 
 // Global vars
