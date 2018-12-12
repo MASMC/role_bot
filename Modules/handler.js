@@ -90,15 +90,13 @@ class handler
         else if(content.startsWith("@populateRoles") && message.guild.ownerID == author.id) {
             let data = message.guild.roles.array();
             let ids = [];
+            let names = [];
             for(let i = 1; i < data.length; i++) {
                 ids.push(data[i].toString().replace(/[^\d]/g, ""));
             }
-            let names = [];
             for(let i = 1; i < ids.length; i++) {
                 let role = message.guild.roles.get(ids[i]);
                 names.push(role.name);
-            };
-            for(let i = 1; i < ids.length; i++) {
                 roles[ids[i]] = names[i - 1];
             }
             let toStr = JSON.stringify(roles, null, 4);
