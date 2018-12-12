@@ -57,6 +57,11 @@ fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
 });
 
 // Watch for change in strings, update if change detected
-fs.watch('./Data/strings.json', (eventType, filename) => {
+fs.watchFile('./Data/strings.json', (eventType, filename) => {
     strings = files.updateStrings();
+});
+
+// Watch for changes in configs, update if change detected
+fs.watchFile('./Config/config.json', (eventType, filename) => {
+    config = files.updateConfigs();
 });

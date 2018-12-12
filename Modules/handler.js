@@ -41,12 +41,10 @@ class handler
         let command;
         let tokens;
         let firstSpace = content.indexOf(' ');
-        if(firstSpace == -1)
-        {
+        if(firstSpace == -1) {
             command = content;
         }
-        else
-        {
+        else {
             command = content.substring(0, firstSpace);
             tokens = content.substring(firstSpace + 1).split(" ");
         }
@@ -55,20 +53,19 @@ class handler
         // console.log(command + "[" + tokens + "]");
 
         // Log if command is invoked
-        if(content.substring(0,1) == "/" || content.substring(0,1) == "@")
-        {
+        if(content.substring(0,1) == "/" || content.substring(0,1) == "!/") {
             console.log(`${author.username} has invoked command: ${content}`);
         }
 
         // Handle owner commands
-        if(content.startsWith("@ownerHelp") && message.guild.ownerID == author.id) {
+        if(content.startsWith("!/ownerHelp") && message.guild.ownerID == author.id) {
             let msg = generateEmbed("I'm here to help!", "00ffff");
-            msg.addField("@throwError","Throws a test error embed. Optional error ID after command.", true);
-            msg.addField("@createEmbed", "Creates a test embed. Description required, optional colour in hex format (rrggbb).", true);
-            msg.addField("@populateRoles", "Populates the role list (`./Data/roles.json`).", true);
+            msg.addField("!/throwError","Throws a test error embed. Optional error ID after command.", true);
+            msg.addField("!/createEmbed", "Creates a test embed. Description required, optional colour in hex format (rrggbb).", true);
+            msg.addField("!/populateRoles", "Populates the role list (`./Data/roles.json`).", true);
             channel.send(msg);
         }
-        else if(content.startsWith("@throwError") && message.guild.ownerID == author.id) {
+        else if(content.startsWith("!/throwError") && message.guild.ownerID == author.id) {
             if(tokens != undefined) {
                 channel.send(generateError(tokens[0]));
             }
@@ -76,7 +73,7 @@ class handler
                 channel.send(generateError(402));
             }
         }
-        else if(content.startsWith("@createEmbed") && message.guild.ownerID == author.id) {
+        else if(content.startsWith("!/createEmbed") && message.guild.ownerID == author.id) {
             if(tokens == undefined) {
                 channel.send(generateError(400));
             }
@@ -87,7 +84,7 @@ class handler
                 channel.send(generateEmbed(tokens[0], tokens[1]));
             }
         }
-        else if(content.startsWith("@populateRoles") && message.guild.ownerID == author.id) {
+        else if(content.startsWith("!/populateRoles") && message.guild.ownerID == author.id) {
             let data = message.guild.roles.array();
             let ids = [];
             let names = [];
@@ -105,19 +102,22 @@ class handler
             });
             channel.send(`Done populating roles. See \`${rolePath}\` for confirmation of names.`);
         }
-        else if(content.startsWith("@viewRoles") && message.guild.ownerID == author.id) {
+        else if(content.startsWith("!/viewRoles") && message.guild.ownerID == author.id) {
             channel.send("```JSON\n" + JSON.stringify(roles, null, 4) + "\n```");
         }
-        else if(content.startsWith("@adminRole") && message.guild.ownerID == author.id) {
+        else if(content.startsWith("!/adminRole") && message.guild.ownerID == author.id) {
             if(message.mentions.roles.first() == undefined && tokens == undefined) {
                 channel.send(generateError(400));
             }
             else if(message.mentions.roles.first() == undefined) {
-                if(roles.has(tokens[0])) {
+                if(roles.hasOwnProperty(tokens[0])) {
                     config.adminRole = tokens[0];
                     console.log("Admin role updated");
                     channel.send("Admin role successfully updated.");
                     fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                }
+                else {
+                    channel.send(generateError(404));
                 }
             }
             else {
@@ -128,13 +128,39 @@ class handler
                 fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
             }
         }
+        else if(content.startsWith("!/staffRole") && message.guild.ownerID == author.id) {
+            if(message.mentions.roles.first() == undefined && tokens == undefined) {
+                channel.send(generateError(400));
+            }
+            else if(message.mentions.roles.first() == undefined) {
+                if(roles.hasOwnProperty(tokens[0])) {
+                    config.staffRole = tokens[0];
+                    console.log("Staff role updated");
+                    channel.send("Staff role successfully updated.");
+                    fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                }
+                else {
+                    channel.send(generateError(404));
+                }
+            }
+            else {
+                let mentionedRole = message.mentions.roles.first();
+                config.staffRole = mentionedRole.id;
+                console.log("Staff role updated");
+                channel.send("Staff role successfully updated.");
+                fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+            }
+        }
+        else if(content.startsWith("!/viewConfigs") && message.guild.ownerID == author.id) {
+            channel.send("```JSON\n" + JSON.stringify(config, null, 4) + "\n```");
+        }
 
         // Handle moderation commands
-        // if(content.startsWith("!modHelp") && author.) {
-        //     let msg = generateEmbed("I'm here to help!", "00ffff");
-        //     msg.addField("!say","Allows the bot to \"say\" something.",true);
-        //     channel.send(msg);
-        // }
+        if(content.startsWith("!modHelp") && author.id == config.staffRole) {
+            let msg = generateEmbed("I'm here to help!", "00ffff");
+            msg.addField("!say","Allows the bot to \"say\" something.",true);
+            channel.send(msg);
+        }
 
         // Handle normal user commands
         if(content.startsWith("/help")) {
@@ -189,5 +215,6 @@ function generateEmbed(desc, color)
     .setFooter(randomString(), pfp);
     return embed;
 }
+
 
 module.exports = handler;
