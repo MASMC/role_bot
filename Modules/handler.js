@@ -93,11 +93,9 @@ class handler
             let names = [];
             for(let i = 1; i < data.length; i++) {
                 ids.push(data[i].toString().replace(/[^\d]/g, ""));
-            }
-            for(let i = 1; i < ids.length; i++) {
-                let role = message.guild.roles.get(ids[i]);
+                let role = message.guild.roles.get(ids[i - 1]);
                 names.push(role.name);
-                roles[ids[i]] = names[i - 1];
+                roles[ids[i - 1]] = names[i - 1];
             }
             let toStr = JSON.stringify(roles, null, 4);
             fs.writeFile(rolePath, "{", err => {
