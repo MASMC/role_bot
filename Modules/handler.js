@@ -19,6 +19,7 @@ console.log("String list loaded in handler.js");
 
 // Global vars
 const pfp = "";
+const rolePath = "./Data/roles.json";
 
 const embedTemplate = new Discord.RichEmbed();
 embedTemplate.setAuthor(config.name, pfp, config.website)
@@ -101,13 +102,13 @@ class handler
                 roles[ids[i]] = names[i - 1];
             }
             let toStr = JSON.stringify(roles, null, 4);
-            fs.writeFile('./Data/roles.json', "{}", err => {
+            fs.writeFile(rolePath, "{", err => {
                 console.log();
             });
-            fs.writeFile('./Data/roles.json', toStr, err => {
+            fs.writeFile(rolePath, toStr, err => {
                 console.log("Roles populated.");
             });
-            channel.send("Done populating roles. See `./Data/roles.json` for confirmation of names.");
+            channel.send(`Done populating roles. See \`${rolePath}\` for confirmation of names.`);
         }
         else if(content.startsWith("@viewRoleObjects") && message.guild.ownerID == author.id) {
             console.log(message.guild.roles);
