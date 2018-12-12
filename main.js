@@ -56,11 +56,6 @@ fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
     blacklist = files.updateBlacklist();
 });
 
-// Watch for change in roles, update if change detected
-fs.watch('./Data/roles.json', (eventType, filename) => {
-    roles = files.updateRoles();
-});
-
 // Watch for change in strings, update if change detected
 fs.watch('./Data/strings.json', (eventType, filename) => {
     strings = files.updateStrings();

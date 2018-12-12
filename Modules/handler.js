@@ -53,52 +53,74 @@ class handler
         // DEBUG FUNCTION
         // console.log(command + "[" + tokens + "]");
 
-        // Begin handling commands
-        if(content.substring(0,1) == "/")
+        // Log if command is invoked
+        if(content.substring(0,1) == "/" || content.substring(0,1) == "@")
         {
-            console.log(`${message.author.username} has invoked command: ${message.content}`);
+            console.log(`${author.username} has invoked command: ${content}`);
         }
 
-        if(content.startsWith("/ping"))
-        {
-            channel.send("Pong!");
+        // Handle owner commands
+        if(content.startsWith("@ownerHelp") && message.guild.ownerID == author.id) {
+            let msg = generateEmbed("I'm here to help!", "00ffff");
+            msg.addField("@throwError","Throws a test error embed. Optional error ID after command.", true);
+            msg.addField("@createEmbed", "Creates a test embed. Description required, optional colour in hex format (rrggbb).", true);
+            msg.addField("@populateRoles", "Populates the role list (`./Data/roles.json`).", true);
+            channel.send(msg);
         }
-        else if(content.startsWith("/string"))
-        {
-            channel.send("Your string is: " + randomString());
-        }
-        else if(content.startsWith("/testError"))
-        {
-            if(content.indexOf(' ') != -1)
-            {
-                let num = content.substring(content.indexOf(' ') + 1);
-                channel.send(generateError(num));
+        else if(content.startsWith("@throwError") && message.guild.ownerID == author.id) {
+            if(tokens != undefined) {
+                channel.send(generateError(tokens[0]));
             }
-            else
-            {
+            else {
                 channel.send(generateError(402));
             }
         }
-        else if(content.startsWith("/testEmbed"))
-        {
-            if(content.indexOf(' ') != -1)
-            {
-                let tokens = content.split(' ');
-                // console.log(tokens);
-                if(tokens.length > 2)
-                {
-                    // console.log(tokens[1] + " " + tokens[2]);
-                    channel.send(generateEmbed(tokens[1], tokens[2]));
-                }
-                else if(tokens.length == 2)
-                {
-                    channel.send(generateEmbed(tokens[1]));
-                }
-                else
-                {
-                    channel.send(generateEmbed("Default Description"));
-                }
+        else if(content.startsWith("@createEmbed") && message.guild.ownerID == author.id) {
+            if(tokens == undefined) {
+                channel.send(generateError(400));
             }
+            else if(tokens.length == 1) {
+                channel.send(generateEmbed(tokens[0], undefined));
+            }
+            else {
+                channel.send(generateEmbed(tokens[0], tokens[1]));
+            }
+        }
+        else if(content.startsWith("@populateRoles") && message.guild.ownerID == author.id) {
+            let data = message.guild.roles.array();
+            let ids = [];
+            for(let i = 1; i < data.length; i++) {
+                ids.push(data[i].toString().replace(/[^\d]/g, ""));
+            }
+            let names = [];
+            for(let i = 1; i < ids.length; i++) {
+                let role = message.guild.roles.get(ids[i]);
+                names.push(role.name);
+            };
+            for(let i = 1; i < ids.length; i++) {
+                roles[ids[i]] = names[i - 1];
+            }
+            let toStr = JSON.stringify(roles, null, 4);
+            fs.writeFile('./Data/roles.json', "{}", err => {
+                console.log();
+            });
+            fs.writeFile('./Data/roles.json', toStr, err => {
+                console.log("Roles populated.");
+            });
+            channel.send("Done populating roles. See `./Data/roles.json` for confirmation of names.");
+        }
+        else if(content.startsWith("@viewRoleObjects") && message.guild.ownerID == author.id) {
+            console.log(message.guild.roles);
+        }
+
+        // Handle normal user commands
+        if(content.startsWith("/help")) {
+            let msg = generateEmbed("I'm here to help!", "00ffff");
+            msg.addField("/ping","Pong!",true);
+            channel.send(msg);
+        }
+        else if(content.startsWith("/ping")) {
+            channel.send("Pong!");
         }
     }
 }
