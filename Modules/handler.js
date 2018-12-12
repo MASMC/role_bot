@@ -103,16 +103,42 @@ class handler
             }
             let toStr = JSON.stringify(roles, null, 4);
             fs.writeFile(rolePath, "{", err => {
-                console.log();
-            });
-            fs.writeFile(rolePath, toStr, err => {
-                console.log("Roles populated.");
+                fs.writeFile(rolePath, toStr, err => {
+                    console.log("Roles populated.");
+                });
             });
             channel.send(`Done populating roles. See \`${rolePath}\` for confirmation of names.`);
         }
-        else if(content.startsWith("@viewRoleObjects") && message.guild.ownerID == author.id) {
-            console.log(message.guild.roles);
+        else if(content.startsWith("@viewRoles") && message.guild.ownerID == author.id) {
+            channel.send("```JSON\n" + JSON.stringify(roles, null, 4) + "\n```");
         }
+        else if(content.startsWith("@adminRole") && message.guild.ownerID == author.id) {
+            if(message.mentions.roles.first() == undefined && tokens == undefined) {
+                channel.send(generateError(400));
+            }
+            else if(message.mentions.roles.first() == undefined) {
+                if(roles.has(tokens[0])) {
+                    config.adminRole = tokens[0];
+                    console.log("Admin role updated");
+                    channel.send("Admin role successfully updated.");
+                    fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                }
+            }
+            else {
+                let mentionedRole = message.mentions.roles.first();
+                config.adminRole = mentionedRole.id;
+                console.log("Admin role updated");
+                channel.send("Admin role successfully updated.");
+                fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+            }
+        }
+
+        // Handle moderation commands
+        // if(content.startsWith("!modHelp") && author.) {
+        //     let msg = generateEmbed("I'm here to help!", "00ffff");
+        //     msg.addField("!say","Allows the bot to \"say\" something.",true);
+        //     channel.send(msg);
+        // }
 
         // Handle normal user commands
         if(content.startsWith("/help")) {
