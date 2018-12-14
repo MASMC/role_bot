@@ -1,6 +1,22 @@
 {
-    "402":"All is well",
-    "404":"Not found",
-    "403":"Not authorized",
-    "400":"Invalid arguments"
+    "400":{
+        "description":"Invalid arguments",
+        "color":"ff0000"
+    },
+    "401":{
+        "description":"Not authorized",
+        "color":"ff0000"
+    },
+    "402":{
+        "description":"All is well",
+        "color":"00ff00"
+    },
+    "403":{
+        "description":"Forbidden",
+        "color":"ff0000"
+    },
+    "404":{
+        "description":"Not found",
+        "color":"ff0000"
+    }
 }

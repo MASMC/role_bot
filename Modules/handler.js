@@ -236,15 +236,15 @@ function generateError(code) {
     .setFooter(randomString(), pfp);
     if(errors.hasOwnProperty(code))
     {
-        embed.setColor([0,255,0])
-        .setDescription(er)
+        embed.setColor(errors[code].color)
+        .setDescription("Uh oh, looks like we've encountered an error!")
         .addField("Error Code:", code, true)
-        .addField("Error Description:", "All is well!");
+        .addField("Error Description:", errors[code].description);
     }
     else
     {
         embed.setColor([255,0,0])
-        .setDescription("Uh oh! We've encountered an error!")
+        .setDescription("Uh oh, looks like we've encountered an error!")
         .addField("Error Code:", code, true)
         .addField("Error Description:", "UNKNOWN");
     }

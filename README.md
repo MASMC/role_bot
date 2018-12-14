@@ -59,6 +59,31 @@ Now, remember how the website looked? This time, you don't need the bot tab, you
 
 --------------------
 
+## Contributing
+
+### Adding error codes
+Please ensure that when you add error codes, they stay in proper order (with numerical above alphabetical). The formatting should end up looking the same. Color and description direction are interchangeable, so long as both exist in the error object. Formatting:
+```JSON
+{
+    "ERROR_NAME":{
+        "color":"HEX_COLOUR_CODE",
+        "description":"ERROR_DESCRIPTION"
+    }
+}
+```
+
+### Adding new message functions
+All message functions belong in the handler file! Location: `/Modules/handler.js`
+Please attempt to keep the formatting of the file, and keep all functions self contained. If a global variable is needed, you're doing it wrong.
+
+### Updating the README.md
+This shouldn't be touched, no PRs will be accepted that update the README file, beyond adding a name to the contributor list.
+
+### Command documentation
+Update this as you add commands. Once the github pages website is working, you will need to update that as well. For now, the file `COMMANDS.md` contain all the commands, with proper formatting.
+
+--------------------
+
 That's it, why are you still scrolling?
 
 --------------------
