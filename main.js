@@ -20,13 +20,11 @@ console.log("Credentials and configs loaded in main.js");
 
 // First read of storage JSON files. We do this just so that they're loaded and ready to go.
 let blacklist = files.updateBlacklist();
-console.log("Blacklisted user list loaded in main.js");
 let roles = files.updateRoles();
-console.log("Role list loaded in main.js");
 let strings = files.updateStrings();
-console.log("String list loaded in main.js");
 
 console.log("Data loaded in main.js, beginning setup");
+console.log("File system initialized.");
 
 // When client is ready, do this!
 client.once('ready', () => {

@@ -7,15 +7,14 @@ const files = new Files();
 
 // Config JSON files. We won't modify these at all, they can be constants.
 let config = files.updateConfigs();
-console.log("Config loaded in handler.js");
+let errors = files.updateErrors();
+console.log("Configs loaded in handler.js");
 
 // First read of storage JSON files. We do this just so that they're loaded and ready to go.
 let blacklist = files.updateBlacklist();
-console.log("Blacklisted user list loaded in handler.js");
 let roles = files.updateRoles();
-console.log("Role list loaded in handler.js");
 let strings = files.updateStrings();
-console.log("String list loaded in handler.js");
+console.log("Data loaded in handler.js");
 
 // Global vars
 const pfp = "";
@@ -36,6 +35,7 @@ class handler
         let content = message.content;
         let author = message.author;
         let channel = message.channel;
+        let guild = message.guild;
 
         // Check for the first space
         let command;
@@ -53,106 +53,152 @@ class handler
         // console.log(command + "[" + tokens + "]");
 
         // Log if command is invoked
-        if(content.substring(0,1) == "/" || content.substring(0,1) == "!/") {
+        if(content.substring(0,1) == "/") {
             console.log(`${author.username} has invoked command: ${content}`);
+        }
+        else if(content.substring(0,2) == "!/") {
+            console.log(`${author.username} has invoked owner command: ${content}`);
         }
 
         // Handle owner commands
-        if(content.startsWith("!/ownerHelp") && message.guild.ownerID == author.id) {
-            let msg = generateEmbed("I'm here to help!", "00ffff");
-            msg.addField("!/throwError","Throws a test error embed. Optional error ID after command.", true);
-            msg.addField("!/createEmbed", "Creates a test embed. Description required, optional colour in hex format (rrggbb).", true);
-            msg.addField("!/populateRoles", "Populates the role list (`./Data/roles.json`).", true);
-            channel.send(msg);
-        }
-        else if(content.startsWith("!/throwError") && message.guild.ownerID == author.id) {
-            if(tokens != undefined) {
-                channel.send(generateError(tokens[0]));
+        if(content.startsWith("!/ownerHelp")) {
+            if(author.id == guild.ownerID) {
+                let msg = generateEmbed("I'm here to help!", "00ffff");
+                msg.addField("!/throwError","Throws a test error embed. Optional error ID after command.", true);
+                msg.addField("!/createEmbed", "Creates a test embed. Description required, optional colour in hex format (rrggbb).", true);
+                msg.addField("!/populateRoles", "Populates the role list (`./Data/roles.json`).", true);
+                channel.send(msg);
             }
             else {
-                channel.send(generateError(402));
+                channel.send(generateError(403));
             }
         }
-        else if(content.startsWith("!/createEmbed") && message.guild.ownerID == author.id) {
-            if(tokens == undefined) {
-                channel.send(generateError(400));
-            }
-            else if(tokens.length == 1) {
-                channel.send(generateEmbed(tokens[0], undefined));
+        else if(content.startsWith("!/throwError")) {
+            if(author.id == guild.ownerID) {
+                if(tokens != undefined) {
+                    channel.send(generateError(tokens[0]));
+                }
+                else {
+                    channel.send(generateError(402));
+                }
             }
             else {
-                channel.send(generateEmbed(tokens[0], tokens[1]));
+                channel.send(generateError(403));
             }
         }
-        else if(content.startsWith("!/populateRoles") && message.guild.ownerID == author.id) {
-            let data = message.guild.roles.array();
-            let ids = [];
-            let names = [];
-            for(let i = 1; i < data.length; i++) {
-                ids.push(data[i].toString().replace(/[^\d]/g, ""));
-                let role = message.guild.roles.get(ids[i - 1]);
-                names.push(role.name);
-                roles[ids[i - 1]] = names[i - 1];
+        else if(content.startsWith("!/createEmbed")) {
+            if(author.id == guild.ownerID) {
+                if(tokens == undefined) {
+                    channel.send(generateError(400));
+                }
+                else if(tokens.length == 1) {
+                    channel.send(generateEmbed(tokens[0], undefined));
+                }
+                else {
+                    channel.send(generateEmbed(tokens[0], tokens[1]));
+                }
             }
-            let toStr = JSON.stringify(roles, null, 4);
-            fs.writeFile(rolePath, "{", err => {
-                fs.writeFile(rolePath, toStr, err => {
-                    console.log("Roles populated.");
+            else {
+                channel.send(generateError(403));
+            }
+        }
+        else if(content.startsWith("!/populateRoles")) {
+            if(author.id == guild.ownerID) {
+                let data = message.guild.roles.array();
+                let ids = [];
+                let names = [];
+                for(let i = 1; i < data.length; i++) {
+                    ids.push(data[i].toString().replace(/[^\d]/g, ""));
+                    let role = message.guild.roles.get(ids[i - 1]);
+                    names.push(role.name);
+                    roles[ids[i - 1]] = names[i - 1];
+                }
+                let toStr = JSON.stringify(roles, null, 4);
+                fs.writeFile(rolePath, "{", err => {
+                    fs.writeFile(rolePath, toStr, err => {
+                        console.log("Roles populated.");
+                    });
                 });
-            });
-            channel.send(`Done populating roles. See \`${rolePath}\` for confirmation of names.`);
-        }
-        else if(content.startsWith("!/viewRoles") && message.guild.ownerID == author.id) {
-            channel.send("```JSON\n" + JSON.stringify(roles, null, 4) + "\n```");
-        }
-        else if(content.startsWith("!/adminRole") && message.guild.ownerID == author.id) {
-            if(message.mentions.roles.first() == undefined && tokens == undefined) {
-                channel.send(generateError(400));
+                channel.send(`Done populating roles. See \`${rolePath}\` for confirmation of names.`);
             }
-            else if(message.mentions.roles.first() == undefined) {
-                if(roles.hasOwnProperty(tokens[0])) {
-                    config.adminRole = tokens[0];
+            else {
+                channel.send(generateError(403));
+            }
+        }
+        else if(content.startsWith("!/viewRoles")) {
+            if(author.id == guild.ownerID)
+            {
+                channel.send("```JSON\n" + JSON.stringify(roles, null, 4) + "\n```");
+            }
+            else {
+                channel.send(generateError(403));
+            }
+        }
+        else if(content.startsWith("!/adminRole")) {
+            if(author.id == guild.ownerID)
+            {
+                if(message.mentions.roles.first() == undefined && tokens == undefined) {
+                    channel.send(generateError(400));
+                }
+                else if(message.mentions.roles.first() == undefined) {
+                    if(roles.hasOwnProperty(tokens[0])) {
+                        config.adminRole = tokens[0];
+                        console.log("Admin role updated");
+                        channel.send("Admin role successfully updated.");
+                        fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                    }
+                    else {
+                        channel.send(generateError(404));
+                    }
+                }
+                else {
+                    let mentionedRole = message.mentions.roles.first();
+                    config.adminRole = mentionedRole.id;
                     console.log("Admin role updated");
                     channel.send("Admin role successfully updated.");
                     fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
                 }
-                else {
-                    channel.send(generateError(404));
-                }
             }
             else {
-                let mentionedRole = message.mentions.roles.first();
-                config.adminRole = mentionedRole.id;
-                console.log("Admin role updated");
-                channel.send("Admin role successfully updated.");
-                fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                channel.send(generateError(403));
             }
         }
-        else if(content.startsWith("!/staffRole") && message.guild.ownerID == author.id) {
-            if(message.mentions.roles.first() == undefined && tokens == undefined) {
-                channel.send(generateError(400));
-            }
-            else if(message.mentions.roles.first() == undefined) {
-                if(roles.hasOwnProperty(tokens[0])) {
-                    config.staffRole = tokens[0];
+        else if(content.startsWith("!/staffRole")) {
+            if(author.id == guild.ownerID) {
+                if(message.mentions.roles.first() == undefined && tokens == undefined) {
+                    channel.send(generateError(400));
+                }
+                else if(message.mentions.roles.first() == undefined) {
+                    if(roles.hasOwnProperty(tokens[0])) {
+                        config.staffRole = tokens[0];
+                        console.log("Staff role updated");
+                        channel.send("Staff role successfully updated.");
+                        fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                    }
+                    else {
+                        channel.send(generateError(404));
+                    }
+                }
+                else {
+                    let mentionedRole = message.mentions.roles.first();
+                    config.staffRole = mentionedRole.id;
                     console.log("Staff role updated");
                     channel.send("Staff role successfully updated.");
                     fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
                 }
-                else {
-                    channel.send(generateError(404));
-                }
             }
             else {
-                let mentionedRole = message.mentions.roles.first();
-                config.staffRole = mentionedRole.id;
-                console.log("Staff role updated");
-                channel.send("Staff role successfully updated.");
-                fs.writeFileSync("./Config/config.json", JSON.stringify(config, null, 4));
+                channel.send(generateError(403));
             }
         }
-        else if(content.startsWith("!/viewConfigs") && message.guild.ownerID == author.id) {
-            channel.send("```JSON\n" + JSON.stringify(config, null, 4) + "\n```");
+        else if(content.startsWith("!/viewConfigs")) {
+            if(author.id == guild.ownerID)
+            {
+                channel.send("```JSON\n" + JSON.stringify(config, null, 4) + "\n```");
+            }
+            else {
+                channel.send(generateError(403));
+            }
         }
 
         // Handle moderation commands
@@ -188,10 +234,10 @@ function generateError(code) {
     let embed = new Discord.RichEmbed();
     embed.setAuthor(config.name, pfp, config.website)
     .setFooter(randomString(), pfp);
-    if(code == 402)
+    if(errors.hasOwnProperty(code))
     {
         embed.setColor([0,255,0])
-        .setDescription("All is well!")
+        .setDescription(er)
         .addField("Error Code:", code, true)
         .addField("Error Description:", "All is well!");
     }
@@ -216,5 +262,24 @@ function generateEmbed(desc, color)
     return embed;
 }
 
+// Watch for file change in blacklist, update if change detected
+fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
+    blacklist = files.updateBlacklist();
+});
+
+// Watch for change in strings, update if change detected
+fs.watchFile('./Data/strings.json', (eventType, filename) => {
+    strings = files.updateStrings();
+});
+
+// Watch for changes in configs, update if change detected
+fs.watchFile('./Config/config.json', (eventType, filename) => {
+    config = files.updateConfigs();
+});
+
+// Watch for changes in error codes, update if change detected
+fs.watchFile('./Config/errorCodes.json', (eventType, filename) => {
+    errors = files.updateErrors();
+});
 
 module.exports = handler;

@@ -4,7 +4,6 @@ class files
 {
     constructor()
     {
-        console.log("File system initialized.");
     }
 
     updateStrings()
@@ -41,6 +40,13 @@ class files
         let data = fs.readFileSync("./Credentials/credentials.json");
         let credentials = JSON.parse(data);
         return credentials;
+    }
+
+    updateErrors()
+    {
+        let data = fs.readFileSync("./Config/errorCodes.json");
+        let codes = JSON.parse(data);
+        return codes;
     }
 }
 
