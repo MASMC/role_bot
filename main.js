@@ -4,7 +4,7 @@ require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')
 const fs = require("fs"); // fs is NOT required to be installed through node
 
 // Import custom modules
-const Handler = require("./Modules/handler.js");
+const Handler = require("./Modules/new_handler.js");
 const handler = new Handler();
 
 const Files = require("./Modules/files.js");
