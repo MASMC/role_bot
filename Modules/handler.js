@@ -174,6 +174,19 @@ function handleStaff(message) {
     let author = message.author;
     let guild = message.guild;
 
+    // Grab their roles, see if they're admin or owner of the guild
+    let admin = false;
+    if (author.id == guild.owner.id) {
+        admin = true;
+    } else {
+        let data = member.roles.array();
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id == config.adminRole) {
+                admin = true;
+            }
+        }
+    }
+
     // Find the first space, or the end of line
     let command;
     let tokens;
