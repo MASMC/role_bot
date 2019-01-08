@@ -1,30 +1,32 @@
 // Import required APIs for bot to function
-const Discord = require("discord.js");
+global.Discord = require("discord.js");
 require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
-const fs = require("fs"); // fs is NOT required to be installed through node
+global.fs = require("fs"); // fs is NOT required to be installed through node
 
-// Import custom modules
-const Handler = require("./Modules/new_handler.js");
-const handler = new Handler();
-
-const Files = require("./Modules/files.js");
-const files = new Files();
+// Import files custom module
+global.Files = require("./Modules/files.js");
+global.files = new Files();
 
 // Create any objects we need from the APIs
-var client = new Discord.Client();
+global.client = new Discord.Client();
 
 // Config JSON files. We won't modify these at all, they can be constants.
 const credentials = files.loadCredentials();
-let config = files.updateConfigs();
+global.config = files.updateConfigs();
+global.errors = files.updateErrors();
 console.log("Credentials and configs loaded in main.js");
 
 // First read of storage JSON files. We do this just so that they're loaded and ready to go.
-let blacklist = files.updateBlacklist();
-let roles = files.updateRoles();
-let strings = files.updateStrings();
+global.blacklist = files.updateBlacklist();
+global.roles = files.updateRoles();
+global.strings = files.updateStrings();
 
 console.log("Data loaded in main.js, beginning setup");
 console.log("File system initialized.");
+
+// Create the handler
+global.Handler = require("./Modules/new_handler.js");
+global.handler = new Handler();
 
 // When client is ready, do this!
 client.once('ready', () => {

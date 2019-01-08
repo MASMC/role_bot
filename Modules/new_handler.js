@@ -1,21 +1,5 @@
 // Message handler
 
-const Discord = require("discord.js");
-const fs = require("fs");
-const Files = require("../Modules/files.js")
-const files = new Files();
-
-// Config JSON files (located in ./Config)
-let config = files.updateConfigs();
-let errors = files.updateErrors();
-console.log("Config files loaded in handler.js");
-
-// Data JSON files (located in ./Data)
-let blacklist = files.updateBlacklist();
-let roles = files.updateRoles();
-let strings = files.updateStrings();
-console.log("Data files loaded in handler.js");
-
 // Global constants
 const pfp = "";
 const dataPath = "./Data/";
@@ -40,20 +24,25 @@ class handler {
         let member = message.member;
 
         // Begin checking the first characters
-        if (content.substring(0, 2) == "!/") {
-            if (author.id == guild.owner.id) {
-                handleOwner(message);
-            } else {
+        if (author.id != client.user.id) {
+            if (content.substring(0, 2) == "!/") {
+                if (author.id == guild.owner.id) {
+                    handleOwner(message);
+                } else {
+                    channel.send(generateError(403));
+                }
+            } else if (content.substring(0, 1) == "!") {
+                let data = member.roles.array();
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].id == config.staffRole || data[i].id == config.adminRole) {
+                        handleStaff(message);
+                        return;
+                    }
+                }
                 channel.send(generateError(403));
+            } else if (content.substring(0, 1) == "/") {
+                handleReg(message);
             }
-        } else if (content.substring(0, 1) == "!") {
-            if (member.roles.hasOwnProperty(config.staffRole)) {
-                handleStaff(message);
-            } else {
-                channel.send(generateError(403));
-            }
-        } else if (content.substring(0, 1) == "/") {
-            handleReg(message);
         }
     }
 }
@@ -79,7 +68,7 @@ function handleOwner(message) {
     }
 
     // Make sure to log the command!
-    console.log(`${author.username} (${author.id}) invoked command ${command} with tokens [${tokens}]`);
+    console.log(`${author.username} (${author.id}) invoked owner-level command ${command} with tokens [${tokens}]`);
 
     // Commands
     if (command == "!/ownerHelp") {
@@ -97,6 +86,18 @@ function handleOwner(message) {
             channel.send(generateError(tokens[0]));
         } else {
             channel.send(generateError(402));
+        }
+    } else if (command == "!/createEmbed") {
+        if (tokens == undefined) {
+            channel.send(generateError(400));
+        } else if (tokens.length = 1) {
+            channel.send(generateEmbed(tokens[0]));
+        } else {
+            let msg = "";
+            for (let i = 1; i < tokens.length - 1; i++) {
+                msg = msg + tokens[i] + " ";
+            }
+            channel.send(generateEmbed(msg, tokens[tokens.length - 1]));
         }
     } else if (command == "!/populateRoles") {
         let data = message.guild.roles.array();
@@ -176,6 +177,7 @@ function handleStaff(message) {
     // Find the first space, or the end of line
     let command;
     let tokens;
+    let firstSpace = content.indexOf(' ');
     if (firstSpace == -1) {
         command = content;
     } else {
@@ -191,6 +193,20 @@ function handleStaff(message) {
         let msg = generateEmbed("I'm here to help!", "00ffff");
         msg.addField("!say", "Allows the bot to \"say\" something.", true);
         channel.send(msg);
+    } else if (command == "!say") {
+        if (tokens != undefined) {
+            let msg = "";
+            for (let i = 0; i < tokens.length; i++) {
+                msg = msg + tokens[i] + " ";
+            }
+            channel.send(msg);
+            message.delete()
+            .then (_msg => {
+                console.log(`Message successfully deleted in ${channel}.`);
+            });
+        } else {
+            channel.send(generateError(400));
+        }
     }
 }
 
@@ -236,29 +252,9 @@ function generateEmbed(desc, color) {
 }
 
 //////////// FILE WATCHERS - DO NOT MODIFY ////////////
-// Blacklist filewatch
-fs.watchFile(dataPath + 'blacklist.json', (eventType, filename) => {
-    blacklist = files.updateBlacklist();
-});
-
-// Strings filewatch
-fs.watchFile(dataPath + 'strings.json', (eventType, filename) => {
-    strings = files.updateStrings();
-});
-
-// Config filewatch
-fs.watchFile(configPath + 'config.json', (eventType, filename) => {
-    config = files.updateConfigs();
-});
-
 // Error code filewatch
 fs.watchFile(configPath + 'errorCodes.json', (eventType, filename) => {
     errors = files.updateErrors();
-});
-
-// Role list filewatch
-fs.watchFile(dataPath + 'roles.json', (eventType, filename) => {
-    roles = files.updateRoles();
 });
 
 module.exports = handler;
