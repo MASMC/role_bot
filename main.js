@@ -25,7 +25,7 @@ console.log("Data loaded in main.js, beginning setup");
 console.log("File system initialized.");
 
 // Create the handler
-global.Handler = require("./Modules/new_handler.js");
+global.Handler = require("./Modules/handler.js");
 global.handler = new Handler();
 
 // When client is ready, do this!
