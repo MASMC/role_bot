@@ -50,18 +50,3 @@ client.on('message', (message) => {
 
 // Make sure the client logs in
 client.login(credentials.auth_token);
-
-// Watch for file change in blacklist, update if change detected
-fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
-    blacklist = files.updateBlacklist();
-});
-
-// Watch for change in strings, update if change detected
-fs.watchFile('./Data/strings.json', (eventType, filename) => {
-    strings = files.updateStrings();
-});
-
-// Watch for changes in configs, update if change detected
-fs.watchFile('./Config/config.json', (eventType, filename) => {
-    config = files.updateConfigs();
-});
