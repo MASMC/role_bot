@@ -212,7 +212,37 @@ function handleStaff(message) {
 
 // Regular commands
 function handleReg(message) {
+    // Ease of typing message variables
+    let content = message.content;
+    let author = message.author;
+    let channel = message.channel;
+    let guild = message.huild;
+    let member = message.member;
 
+    // Let's find a space, or the end of the line. Whichever comes first.
+    let command;
+    let tokens;
+    let firstSpace = content.indexOf(' ');
+    if (firstSpace == -1) {
+        command = content;
+    } else {
+        command = content.substring(0, firstSpace);
+        tokens = content.substring(++firstSpace).split(' ');
+    }
+
+    // Make sure to log the command!
+    console.log(`${author.username} (${author.id}) invoked a command ${command} with tokens [${tokens}].`);
+
+    // Commands
+    if (command == "/help") {
+        let msg = generateEmbed("I'm here to help!", "00ffff");
+        msg.addField("/ping", "Pong!", true);
+        channel.send(msg);
+    } else if (command == "/ping") {
+        channel.send("Pong!");
+    } else {
+        channel.send(generateError(404));
+    }
 }
 
 // Generate a random string from strings.json
