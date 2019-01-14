@@ -49,5 +49,9 @@ function loadCreds() {
 // Declare credentials variable, and pass it off!
 const credentials = loadCreds();
 
-// Make sure the client logs in
-client.login(credentials.auth_token);
+// Make sure the client logs in, if auth_token is valid
+if (credentials.auth_token.length != 0) {
+    client.login(credentials.auth_token);
+} else {
+    console.log("Invalid auth token!");
+}
