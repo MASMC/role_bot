@@ -1,0 +1,18 @@
+# Test against nodejs current version
+environment:
+    nodejs_version: ''
+
+# Install scripts
+install:
+    # Latest stable version of NodeJS
+    - ps: Install-Product node ''
+    # Install modules
+    - npm install
+
+# Post-install test scripts
+test_script:
+    # Debug info
+    - node --version
+    - npm --version
+    # Run tests
+    - node main.js
