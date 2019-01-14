@@ -54,4 +54,5 @@ if (credentials.auth_token.length != 0) {
     client.login(credentials.auth_token);
 } else {
     console.log("Invalid auth token!");
+    process.exit();
 }
