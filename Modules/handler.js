@@ -220,8 +220,6 @@ function handleStaff(message) {
             .then (_msg => {
                 console.log(`Message successfully deleted in ${channel}.`);
             });
-        } else if (false) {
-
         } else {
             channel.send(generateError(400));
         }
