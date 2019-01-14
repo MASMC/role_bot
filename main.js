@@ -10,20 +10,6 @@ global.files = new Files();
 // Create any objects we need from the APIs
 global.client = new Discord.Client();
 
-// Config JSON files. We won't modify these at all, they can be constants.
-const credentials = files.loadCredentials();
-global.config = files.updateConfigs();
-global.errors = files.updateErrors();
-console.log("Credentials and configs loaded in main.js");
-
-// First read of storage JSON files. We do this just so that they're loaded and ready to go.
-global.blacklist = files.updateBlacklist();
-global.roles = files.updateRoles();
-global.strings = files.updateStrings();
-
-console.log("Data loaded in main.js, beginning setup");
-console.log("File system initialized.");
-
 // Create the handler
 global.Handler = require("./Modules/handler.js");
 global.handler = new Handler();
@@ -35,9 +21,9 @@ client.once('ready', () => {
 
 // Message handling, thrown to ./Modules/handler.js
 client.on('message', (message) => {
-    if(blacklist.hasOwnProperty(message.author.id))
+    if(blacklist.hasOwnProperty(message.author.id)) // Check all incoming messages against the blacklist
     {
-        if(message.content.substring(0,1) == "/")
+        if(message.content.substring(0,1) == "/" || message.content.substring(0,1) == "!") // If the blacklisted user attempts a command, log it.
         {
             console.log("Blacklisted user attempted to use the bot!");
         }
@@ -47,6 +33,21 @@ client.on('message', (message) => {
         handler.handle(message);
     }
 });
+
+/*
+ * Credentials set-up
+ * We do all file functions here at the end, if they aren't done in the file module.
+ *
+ * First, a function to load them so we don't offload the work to a seperate module
+ */
+function loadCreds() {
+    let data = fs.readFileSync("./Credentials/credentials.json");
+    let creds = JSON.parse(data);
+    return creds;
+}
+
+// Declare credentials variable, and pass it off!
+const credentials = loadCreds();
 
 // Make sure the client logs in
 client.login(credentials.auth_token);
