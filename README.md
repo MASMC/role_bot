@@ -2,7 +2,7 @@
 ### A bot for all those who can't enable 2-Factor authentication
 *I know the pain*
 
-![Build Status](https://ci.appveyor.com/api/projects/status/fxnlhkq0lpdqe8de/branch/master?svg=true)
+[![Build status](https://ci.appveyor.com/api/projects/status/fxnlhkq0lpdqe8de/branch/master?svg=true)](https://ci.appveyor.com/project/MASMC/role-bot/branch/master)
 
 --------------------
 
