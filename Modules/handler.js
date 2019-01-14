@@ -223,6 +223,19 @@ function handleStaff(message) {
         } else {
             channel.send(generateError(400));
         }
+    } else if (command == "!viewRoles") {
+        let staffRoles = member.roles.array();
+        let strStaffRoles = "";
+        for (let i = 0; i < staffRoles.length; i++) {
+            if (staffRoles[i].name == "@everyone") {
+                strStaffRoles = strStaffRoles + "everyone ";
+            } else {
+                strStaffRoles = strStaffRoles + staffRoles[i].name + " ";
+            }
+        }
+        channel.send(strStaffRoles);
+    } else {
+        channel.send(generateError(404));
     }
 }
 
