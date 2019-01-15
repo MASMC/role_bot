@@ -268,7 +268,7 @@ function handleReg(message) {
         msg.addField("/ping", "Pong!", true);
         channel.send(msg);
     } else if (command == "/ping") {
-        channel.send("Pong!");
+        client.commands.get("ping").execute(message, tokens);
     } else {
         channel.send(generateError(404));
     }

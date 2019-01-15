@@ -3,12 +3,12 @@ global.Discord = require("discord.js");
 require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
 global.fs = require("fs"); // fs is NOT required to be installed through node
 
+// Create any objects we need from the APIs
+global.client = new Discord.Client();
+
 // Import files custom module
 global.Files = require("./Modules/files.js");
 global.files = new Files();
-
-// Create any objects we need from the APIs
-global.client = new Discord.Client();
 
 // Create the handler
 global.Handler = require("./Modules/handler.js");

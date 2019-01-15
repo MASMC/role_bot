@@ -12,46 +12,73 @@ class files
         global.roles = updateRoles();
         global.strings = updateStrings();
         console.log("Data loaded!");
+
+        // Load commands
+        client.commands = new Discord.Collection();
+        updateCommands();
+        console.log("Commands loaded!");
+
         console.log("File system initialized successfully!");
     }
 }
 
-function updateStrings()
-{
+function updateStrings() {
     let data = fs.readFileSync("./Data/strings.json");
     let str = JSON.parse(data);
     let strings = str.strings;
     return strings;
 }
 
-function updateConfigs()
-{
+function updateConfigs() {
     let data = fs.readFileSync("./Config/config.json");
     let configs = JSON.parse(data);
     return configs;
 }
 
-function updateBlacklist()
-{
+function updateBlacklist() {
     let data = fs.readFileSync("./Data/blacklist.json");
     let blacklist = JSON.parse(data);
     return blacklist;
 }
 
-function updateRoles()
-{
+function updateRoles() {
     let data = fs.readFileSync("./Data/roles.json");
     let roles = JSON.parse(data);
     return roles;
 }
 
-function updateErrors()
-{
+function updateErrors() {
     let data = fs.readFileSync("./Config/errorCodes.json");
     let codes = JSON.parse(data);
     return codes;
 }
 
+function updateCommands() {
+    // Clear the client commands, so we don't conflict anything
+    client.commands = new Discord.Collection();
+
+    // First add the owner commands
+    let commandFiles = fs.readdirSync("./Modules/Commands/Owner").filter(file => file.endsWith(".js"));
+    addCommands(commandFiles, "Owner");
+
+    // Second add the staff commands
+    commandFiles = fs.readdirSync("./Modules/Commands/Staff").filter(file => file.endsWith(".js"));
+    addCommands(commandFiles, "Staff");
+
+    // Last add the general commands
+    commandFiles = fs.readdirSync("./Modules/Commands/General").filter(file => file.endsWith(".js"));
+    addCommands(commandFiles, "General");
+}
+
+function addCommands(commandFiles, folder) {
+    for (let file of commandFiles) {
+        let command = require(`../Modules/Commands/${folder}/${file}`);
+
+        // New item in the collection
+        // Key is command name, value is the command function
+        client.commands.set(command.name, command);
+    }
+}
 
 // Watch for file change in blacklist, update if change detected
 fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
@@ -71,6 +98,21 @@ fs.watchFile('./Config/config.json', (eventType, filename) => {
 // Watch for changes in error codes, update if change detected
 fs.watchFile('./Config/errorCodes.json', (eventType, filename) => {
     errors = files.updateErrors();
+});
+
+// Watch for changes in owner commands, update if change detected
+fs.watch('./Modules/Commands/Owner', (eventType, filename) => {
+    updateCommands();
+});
+
+// Watch for changes in staff commands, update if change detected
+fs.watch('./Modules/Commands/Staff', (eventType, filename) => {
+    updateCommands();
+});
+
+// Watch for changes in general commands, update if change detected
+fs.watch('./Modules/Commands/General', (eventType, filename) => {
+    updateCommands();
 });
 
 module.exports = files;
