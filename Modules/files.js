@@ -100,19 +100,4 @@ fs.watchFile('./Config/errorCodes.json', (eventType, filename) => {
     errors = files.updateErrors();
 });
 
-// Watch for changes in owner commands, update if change detected
-fs.watch('./Modules/Commands/Owner', (eventType, filename) => {
-    updateCommands();
-});
-
-// Watch for changes in staff commands, update if change detected
-fs.watch('./Modules/Commands/Staff', (eventType, filename) => {
-    updateCommands();
-});
-
-// Watch for changes in general commands, update if change detected
-fs.watch('./Modules/Commands/General', (eventType, filename) => {
-    updateCommands();
-});
-
 module.exports = files;

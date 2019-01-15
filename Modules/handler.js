@@ -161,8 +161,7 @@ function handleOwner(message) {
             fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
         }
     } else if (command == "!/shutdown") {
-        console.log("Bot shutting down gracefully due to command!");
-        channel.send("Shutting down, check bot online status for success status.").then(msg=>{process.exit(0);});
+        client.commands.get("shutdown").execute(message, tokens);
     } else {
         channel.send(generateError(404));
     }
