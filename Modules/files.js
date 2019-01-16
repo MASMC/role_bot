@@ -90,7 +90,6 @@ function updateCommands() {
 
     // First add the owner commands
     let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
-    addCommands(commandFiles);
     for (let file of commandFiles) {
         let command = require(`../Modules/Commands/${file}`);
 
