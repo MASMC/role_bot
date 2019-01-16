@@ -63,5 +63,7 @@ typings/
 # Private directory
 /Credentials
 
+# Custom user files
+/Config/config.json
 /Data/roles.json
 /Data/blacklist.json
