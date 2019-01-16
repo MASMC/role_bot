@@ -64,6 +64,7 @@ typings/
 Credentials/
 
 # Custom user files
-Config/config.json
-Data/roles.json
-Data/blacklist.json
+credentials.json
+config.json
+roles.json
+blacklist.json
