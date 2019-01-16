@@ -89,21 +89,10 @@ function updateCommands() {
     client.commands = new Discord.Collection();
 
     // First add the owner commands
-    let commandFiles = fs.readdirSync("./Modules/Commands/Owner").filter(file => file.endsWith(".js"));
-    addCommands(commandFiles, "Owner");
-
-    // Second add the staff commands
-    commandFiles = fs.readdirSync("./Modules/Commands/Staff").filter(file => file.endsWith(".js"));
-    addCommands(commandFiles, "Staff");
-
-    // Last add the general commands
-    commandFiles = fs.readdirSync("./Modules/Commands/General").filter(file => file.endsWith(".js"));
-    addCommands(commandFiles, "General");
-}
-
-function addCommands(commandFiles, folder) {
+    let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
+    addCommands(commandFiles);
     for (let file of commandFiles) {
-        let command = require(`../Modules/Commands/${folder}/${file}`);
+        let command = require(`../Modules/Commands/${file}`);
 
         // New item in the collection
         // Key is command name, value is the command function
