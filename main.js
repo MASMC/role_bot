@@ -1,17 +1,23 @@
+// Log timestamp so we have date and time in the logs
+require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
+
 // Import required APIs for bot to function
 global.Discord = require("discord.js");
-require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
 global.fs = require("fs"); // fs is NOT required to be installed through node
 
 // Create any objects we need from the APIs
 global.client = new Discord.Client();
 
 // Import files custom module
-global.Files = require("./Modules/files.js");
+let Files = require("./Modules/files.js");
 global.files = new Files();
 
+// Automatically create embeds
+let Embedder = require("./Modules/embeds.js");
+global.embeds = new Embedder("");
+
 // Create the handler
-global.Handler = require("./Modules/handler.js");
+let Handler = require("./Modules/handler.js");
 global.handler = new Handler();
 
 // When client is ready, do this!

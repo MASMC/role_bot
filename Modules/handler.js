@@ -1,36 +1,8 @@
-// Message handler
-
-// Global constants
-const pfp = "";
-const dataPath = "./Data/";
-const configPath = "./Config/";
-
-// Embed template
-const embedTemplate = new Discord.RichEmbed();
-embedTemplate.setAuthor(config.name, pfp, config.website)
-    .setFooter(randomString(), pfp);
+// Message handler //
 
 class handler {
     constructor() {
         console.log("Handler initialized and awaiting messages.");
-    }
-
-    // Generate error embed
-    generateError(code) {
-        let embed = new Discord.RichEmbed();
-        embed.setAuthor(config.name, pfp, config.website)
-            .setDescription("Uh oh, looks like we've encountered an error!")
-            .setFooter(randomString(), pfp);
-        if (errors.hasOwnProperty(code)) {
-            embed.setColor(errors[code].color)
-                .addField("Error Code:", code, true)
-                .addField("Error Description:", errors[code].description);
-        } else {
-            embed.setColor([255, 0, 0])
-                .addField("Error Code:", code, true)
-                .addField("Error Description:", "Error unknown!");
-        }
-        return embed;
     }
 
     handle(message) {
@@ -47,7 +19,7 @@ class handler {
                 if (author.id == guild.owner.id) {
                     handleOwner(message);
                 } else {
-                    channel.send(handler.generateError(403));
+                    channel.send(embeds.generateError(403));
                 }
             } else if (content.substring(0, 1) == "!") {
                 let data = member.roles.array();
@@ -57,7 +29,7 @@ class handler {
                         return;
                     }
                 }
-                channel.send(handler.generateError(403));
+                channel.send(embeds.generateError(403));
             } else if (content.substring(0, 1) == "/") {
                 handleReg(message);
             }
@@ -90,7 +62,7 @@ function handleOwner(message) {
 
     // Commands
     if (command == "!/ownerHelp") {
-        let msg = generateEmbed("I'm here to help!", "00ffff");
+        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
         msg.addField("!/throwError", "Throws a test error embed. Optional error ID after command.", true)
             .addField("!/createEmbed", "Creates a test embed. Optional description and color.", true)
             .addField("!/populateRoles", "Populates the role list (`./Data/roles.json`).", true)
@@ -101,21 +73,21 @@ function handleOwner(message) {
         channel.send(msg);
     } else if (command == "!/throwError") {
         if (tokens != undefined) {
-            channel.send(generateError(tokens[0]));
+            channel.send(embeds.generateError(tokens[0]));
         } else {
-            channel.send(generateError(402));
+            channel.send(embeds.generateError(402));
         }
     } else if (command == "!/createEmbed") {
         if (tokens == undefined) {
-            channel.send(generateError(400));
+            channel.send(embeds.generateError(400));
         } else if (tokens.length = 1) {
-            channel.send(generateEmbed(tokens[0]));
+            channel.send(embeds.generateEmbed(tokens[0]));
         } else {
             let msg = "";
             for (let i = 1; i < tokens.length - 1; i++) {
                 msg = msg + tokens[i] + " ";
             }
-            channel.send(generateEmbed(msg, tokens[tokens.length - 1]));
+            channel.send(embeds.generateEmbed(msg, tokens[tokens.length - 1]));
         }
     } else if (command == "!/populateRoles") {
         client.commands.get("populateRoles").execute(message, tokens);
@@ -128,7 +100,7 @@ function handleOwner(message) {
     } else if (command == "!/staffRole") {
         if (message.mentions.roles.first() == undefined && tokens == undefined) {
             console.log("staffrole");
-            channel.send(generateError(400));
+            channel.send(embeds.generateError(400));
         } else if (message.mentions.roles.first() == undefined) {
             if (roles.hasOwnProperty(tokens[0])) {
                 config.staffRole = tokens[0];
@@ -136,7 +108,7 @@ function handleOwner(message) {
                 channel.send("Staff role successfully updated.");
                 fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
             } else {
-                channel.send(generateError(404));
+                channel.send(embeds.generateError(404));
             }
         } else {
             let mentionedRole = message.mentions.roles.first();
@@ -148,7 +120,7 @@ function handleOwner(message) {
     } else if (command == "!/shutdown") {
         client.commands.get("shutdown").execute(message, tokens);
     } else {
-        channel.send(generateError(404));
+        channel.send(embeds.generateError(404));
     }
 }
 
@@ -190,7 +162,7 @@ function handleStaff(message) {
 
     // Commands
     if (command == "!modHelp") {
-        let msg = generateEmbed("I'm here to help!", "00ffff");
+        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
         msg.addField("!say", "Allows the bot to \"say\" something.", true);
         channel.send(msg);
     } else if (command == "!say") {
@@ -205,7 +177,7 @@ function handleStaff(message) {
                 console.log(`Message successfully deleted in ${channel}.`);
             });
         } else {
-            channel.send(generateError(400));
+            channel.send(embeds.generateError(400));
         }
     } else if (command == "!viewRoles") {
         let staffRoles = member.roles.array();
@@ -219,7 +191,7 @@ function handleStaff(message) {
         }
         channel.send(strStaffRoles);
     } else {
-        channel.send(generateError(404));
+        channel.send(embeds.generateError(404));
     }
 }
 
@@ -248,32 +220,14 @@ function handleReg(message) {
 
     // Commands
     if (command == "/help") {
-        let msg = generateEmbed("I'm here to help!", "00ffff");
+        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
         msg.addField("/ping", "Pong!", true);
         channel.send(msg);
     } else if (command == "/ping") {
         client.commands.get("ping").execute(message, tokens);
     } else {
-        channel.send(generateError(404));
+        channel.send(embeds.generateError(404));
     }
-}
-
-// Generate a random string from strings.json
-function randomString() {
-    let len = strings.length;
-    let index = Math.floor(Math.random() * len);
-    let str = strings[index];
-    return str;
-}
-
-// Generate regular embed
-function generateEmbed(desc, color) {
-    let embed = new Discord.RichEmbed();
-    embed.setAuthor(config.name, pfp, config.website)
-        .setColor(parseInt(color, 16))
-        .setDescription(desc)
-        .setFooter(randomString(), pfp);
-    return embed;
 }
 
 module.exports = handler;
