@@ -50,8 +50,12 @@ function loadCreds() {
 const credentials = loadCreds();
 
 // Make sure the client logs in, if auth_token is valid
-if (credentials.auth_token.length != 0) {
+if (credentials.auth_token.length != 0 && process.argv.length == 2) {
     client.login(credentials.auth_token);
+} else if (process.argv.length > 2) {
+    if (process.argv[2] == "-t" || process.argv[2] == "--test") {
+        console.log("NODE TEST SUCCESS!").then(err=>{process.exit();});
+    }
 } else {
     console.log("Invalid auth token!");
     process.exit();
