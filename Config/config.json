@@ -1,4 +1,7 @@
 {
     "name": "Role Bot",
-    "website": "http://MASMC.github.io/role_bot"
+    "website": "http://MASMC.github.io/role_bot",
+    "ownerInvoke": "!/",
+    "staffInvoke": "!",
+    "generalInvoke": "/"
 }
