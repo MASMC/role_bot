@@ -54,7 +54,8 @@ if (credentials.auth_token.length != 0 && process.argv.length == 2) {
     client.login(credentials.auth_token);
 } else if (process.argv.length > 2) {
     if (process.argv[2] == "-t" || process.argv[2] == "--test") {
-        console.log("NODE TEST SUCCESS!").then(err=>{process.exit();});
+        console.log("NODE TEST SUCCESS!");
+        process.exit();
     }
 } else {
     console.log("Invalid auth token!");
