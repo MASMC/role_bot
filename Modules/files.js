@@ -3,14 +3,14 @@ class files
     constructor()
     {
         // Load config folder
-        global.config = updateConfigs();
-        global.errors = updateErrors();
+        global.config = this.updateConfigs();
+        global.errors = this.updateErrors();
         console.log("Configs loaded!");
 
         // Load data folder
-        global.blacklist = updateBlacklist();
-        global.roles = updateRoles();
-        global.strings = updateStrings();
+        global.blacklist = this.updateBlacklist();
+        global.roles = this.updateRoles();
+        global.strings = this.updateStrings();
         console.log("Data loaded!");
 
         // Load commands
@@ -19,6 +19,37 @@ class files
         console.log("Commands loaded!");
 
         console.log("File system initialized successfully!");
+    }
+
+    updateStrings() {
+        let data = fs.readFileSync("./Data/strings.json");
+        let str = JSON.parse(data);
+        let strings = str.strings;
+        return strings;
+    }
+
+    updateConfigs() {
+        let data = fs.readFileSync("./Config/config.json");
+        let configs = JSON.parse(data);
+        return configs;
+    }
+
+    updateBlacklist() {
+        let data = fs.readFileSync("./Data/blacklist.json");
+        let blacklist = JSON.parse(data);
+        return blacklist;
+    }
+
+    updateRoles() {
+        let data = fs.readFileSync("./Data/roles.json");
+        let roles = JSON.parse(data);
+        return roles;
+    }
+
+    updateErrors() {
+        let data = fs.readFileSync("./Config/errorCodes.json");
+        let codes = JSON.parse(data);
+        return codes;
     }
 }
 
@@ -82,22 +113,22 @@ function addCommands(commandFiles, folder) {
 
 // Watch for file change in blacklist, update if change detected
 fs.watchFile('./Data/blacklist.json', (eventType, filename) => {
-    blacklist = files.updateBlacklist();
+    blacklist = updateBlacklist();
 });
 
 // Watch for change in strings, update if change detected
 fs.watchFile('./Data/strings.json', (eventType, filename) => {
-    strings = files.updateStrings();
+    strings = updateStrings();
 });
 
 // Watch for changes in configs, update if change detected
 fs.watchFile('./Config/config.json', (eventType, filename) => {
-    config = files.updateConfigs();
+    config = updateConfigs();
 });
 
 // Watch for changes in error codes, update if change detected
 fs.watchFile('./Config/errorCodes.json', (eventType, filename) => {
-    errors = files.updateErrors();
+    errors = updateErrors();
 });
 
 module.exports = files;
