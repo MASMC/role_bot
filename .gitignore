@@ -61,7 +61,7 @@ typings/
 .next
 
 # Private directory
-Credentials/
+Credentials/*
 
 # Custom user files
 credentials.json
