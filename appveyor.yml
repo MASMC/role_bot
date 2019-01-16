@@ -15,7 +15,7 @@ test_script:
     - node --version
     - npm --version
     # Run tests
-    - node main.js
+    - node main.js -t
 
 #Build script mode
 build: off
