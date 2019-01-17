@@ -69,29 +69,6 @@ function handleOwner(message) {
         console.log(error);
         message.channel.send(embeds.generateError(0));
     }
-    // else if (command == "!/throwError") {
-    //     if (tokens != undefined) {
-    //         channel.send(embeds.generateError(tokens[0]));
-    //     } else {
-    //         channel.send(embeds.generateError(402));
-    //     }
-    // } else if (command == "!/createEmbed") {
-    //     client.commands.get("createEmbed").execute(message, tokens);
-    // } else if (command == "!/populateRoles") {
-    //     client.commands.get("populateRoles").execute(message, tokens);
-    // } else if (command == "!/viewRoles") {
-    //     client.commands.get("viewRoles").execute(message, tokens);
-    // } else if (command == "!/viewConfigs") {
-    //     client.commands.get("viewConfigs").execute(message, tokens);
-    // } else if (command == "!/adminRole") {
-    //     client.commands.get("adminRole").execute(message, tokens);
-    // } else if (command == "!/staffRole") {
-    //      client.commands.get("staffRole").execute(message, tokens);
-    // } else if (command == "!/shutdown") {
-    //      client.commands.get("shutdown").execute(message, tokens);
-    // } else {
-    //     channel.send(embeds.generateError(404));
-    // }
 }
 
 // Staff/Admin only commands
