@@ -76,17 +76,7 @@ function handleOwner(message) {
     //         channel.send(embeds.generateError(402));
     //     }
     // } else if (command == "!/createEmbed") {
-    //     if (tokens == undefined) {
-    //         channel.send(embeds.generateError(400));
-    //     } else if (tokens.length = 1) {
-    //         channel.send(embeds.generateEmbed(tokens[0]));
-    //     } else {
-    //         let msg = "";
-    //         for (let i = 1; i < tokens.length - 1; i++) {
-    //             msg = msg + tokens[i] + " ";
-    //         }
-    //         channel.send(embeds.generateEmbed(msg, tokens[tokens.length - 1]));
-    //     }
+    //     client.commands.get("createEmbed").execute(message, tokens);
     // } else if (command == "!/populateRoles") {
     //     client.commands.get("populateRoles").execute(message, tokens);
     // } else if (command == "!/viewRoles") {
@@ -96,27 +86,9 @@ function handleOwner(message) {
     // } else if (command == "!/adminRole") {
     //     client.commands.get("adminRole").execute(message, tokens);
     // } else if (command == "!/staffRole") {
-    //     if (message.mentions.roles.first() == undefined && tokens == undefined) {
-    //         console.log("staffrole");
-    //         channel.send(embeds.generateError(400));
-    //     } else if (message.mentions.roles.first() == undefined) {
-    //         if (roles.hasOwnProperty(tokens[0])) {
-    //             config.staffRole = tokens[0];
-    //             console.log("Staff role updated!");
-    //             channel.send("Staff role successfully updated.");
-    //             fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
-    //         } else {
-    //             channel.send(embeds.generateError(404));
-    //         }
-    //     } else {
-    //         let mentionedRole = message.mentions.roles.first();
-    //         config.staffRole = mentionedRole.id;
-    //         console.log("Staff role updated!");
-    //         channel.send("Staff role successfully updated.");
-    //         fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
-    //     }
+    //      client.commands.get("staffRole").execute(message, tokens);
     // } else if (command == "!/shutdown") {
-    //     client.commands.get("shutdown").execute(message, tokens);
+    //      client.commands.get("shutdown").execute(message, tokens);
     // } else {
     //     channel.send(embeds.generateError(404));
     // }
