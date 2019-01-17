@@ -1,7 +1,7 @@
 module.exports = {
     name: "populateRoles",
     description: "Populates the roles for the server",
-    perm_lvl: "OWNER",
+    perm_lvl: ["OWNER"],
     execute(message, tokens) {
         let data = message.guild.roles.array();
         let ids = [];

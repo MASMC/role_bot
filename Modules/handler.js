@@ -64,7 +64,11 @@ function handleOwner(message) {
     }
 
     try {
-        client.commands.get(command).execute(message, tokens);
+        if (client.commands.get(command).perm_lvl != "OWNER") {
+            message.channel.send(embeds.generateError(404));
+        } else {
+            client.commands.get(command).execute(message, tokens);
+        }
     } catch (error) {
         console.log(error);
         message.channel.send(embeds.generateError(0));

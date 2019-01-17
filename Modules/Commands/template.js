@@ -1,7 +1,7 @@
 module.exports = {
     name: "",
     description: "",
-    perm_lvl: "",
+    perm_lvl: [""],
     execute(message, tokens) {
 
     },

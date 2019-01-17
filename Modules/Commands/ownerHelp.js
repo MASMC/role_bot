@@ -1,7 +1,7 @@
 module.exports = {
-    name: "ownerHelp",
-    description: "Shows the help page for owner commands",
-    perm_lvl: "OWNER",
+    name: "help",
+    description: "Shows the help page for perm level commands",
+    perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     execute(message, tokens) {
         // Create the base embed
         let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
@@ -13,7 +13,7 @@ module.exports = {
             let command = require(`./${file}`);
 
             // If property perm_lvl == "OWNER", add to embed
-            if (command.perm_lvl == "OWNER") {
+            if (command.perm_lvl == tokens[0]) {
                 msg.addField(command.name, command.description);
             }
         }
