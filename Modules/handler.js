@@ -15,7 +15,7 @@ class handler {
 
         // Begin checking the first characters
         if (author.id != client.user.id) {
-            if (content.substring(0, 2) == "!/") {
+            if (content.substring(0, config.ownerInvoke.length) == config.ownerInvoke) {
                 if (author.id == guild.owner.id) {
                     handleOwner(message);
                 } else {
@@ -42,86 +42,84 @@ function handleOwner(message) {
     // Ease of typing message variables
     let content = message.content;
     let author = message.author;
-    let channel = message.channel;
-    let guild = message.guild;
-    let member = message.member;
 
     // Let's find a space, or the end of line. Whichever comes first.
     let command;
     let tokens;
     let firstSpace = content.indexOf(' ');
     if (firstSpace == -1) {
-        command = content;
+        command = content.substring(config.ownerInvoke.length);
     } else {
-        command = content.substring(0, firstSpace);
+        command = content.substring(config.ownerInvoke.length, firstSpace);
         tokens = content.substring(++firstSpace).split(' ');
     }
 
     // Make sure to log the command!
     console.log(`${author.username} (${author.id}) invoked owner-level command ${command} with tokens [${tokens}]`);
 
-    // Commands
-    if (command == "!/ownerHelp") {
-        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
-        msg.addField("!/throwError", "Throws a test error embed. Optional error ID after command.", true)
-            .addField("!/createEmbed", "Creates a test embed. Optional description and color.", true)
-            .addField("!/populateRoles", "Populates the role list (`./Data/roles.json`).", true)
-            .addField("!/viewRoles", "View the role list.", true)
-            .addField("!/viewConfigs", "View the config file.", true)
-            .addField("!/adminRole", "Set the admin role.", true)
-            .addField("!/staffRole", "Set the staff role.", true);
-        channel.send(msg);
-    } else if (command == "!/throwError") {
-        if (tokens != undefined) {
-            channel.send(embeds.generateError(tokens[0]));
-        } else {
-            channel.send(embeds.generateError(402));
-        }
-    } else if (command == "!/createEmbed") {
-        if (tokens == undefined) {
-            channel.send(embeds.generateError(400));
-        } else if (tokens.length = 1) {
-            channel.send(embeds.generateEmbed(tokens[0]));
-        } else {
-            let msg = "";
-            for (let i = 1; i < tokens.length - 1; i++) {
-                msg = msg + tokens[i] + " ";
-            }
-            channel.send(embeds.generateEmbed(msg, tokens[tokens.length - 1]));
-        }
-    } else if (command == "!/populateRoles") {
-        client.commands.get("populateRoles").execute(message, tokens);
-    } else if (command == "!/viewRoles") {
-        client.commands.get("viewRoles").execute(message, tokens);
-    } else if (command == "!/viewConfigs") {
-        client.commands.get("viewConfigs").execute(message, tokens);
-    } else if (command == "!/adminRole") {
-        client.commands.get("adminRole").execute(message, tokens);
-    } else if (command == "!/staffRole") {
-        if (message.mentions.roles.first() == undefined && tokens == undefined) {
-            console.log("staffrole");
-            channel.send(embeds.generateError(400));
-        } else if (message.mentions.roles.first() == undefined) {
-            if (roles.hasOwnProperty(tokens[0])) {
-                config.staffRole = tokens[0];
-                console.log("Staff role updated!");
-                channel.send("Staff role successfully updated.");
-                fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
-            } else {
-                channel.send(embeds.generateError(404));
-            }
-        } else {
-            let mentionedRole = message.mentions.roles.first();
-            config.staffRole = mentionedRole.id;
-            console.log("Staff role updated!");
-            channel.send("Staff role successfully updated.");
-            fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
-        }
-    } else if (command == "!/shutdown") {
-        client.commands.get("shutdown").execute(message, tokens);
-    } else {
-        channel.send(embeds.generateError(404));
+    // Commands execution
+    if (!client.commands.has(command)) {
+        message.channel.send(embeds.generateError(404));
+        return;
     }
+
+    try {
+        client.commands.get(command).execute(message, tokens);
+    } catch (error) {
+        console.log(error);
+        message.channel.send(embeds.generateError(0));
+    }
+    // else if (command == "!/throwError") {
+    //     if (tokens != undefined) {
+    //         channel.send(embeds.generateError(tokens[0]));
+    //     } else {
+    //         channel.send(embeds.generateError(402));
+    //     }
+    // } else if (command == "!/createEmbed") {
+    //     if (tokens == undefined) {
+    //         channel.send(embeds.generateError(400));
+    //     } else if (tokens.length = 1) {
+    //         channel.send(embeds.generateEmbed(tokens[0]));
+    //     } else {
+    //         let msg = "";
+    //         for (let i = 1; i < tokens.length - 1; i++) {
+    //             msg = msg + tokens[i] + " ";
+    //         }
+    //         channel.send(embeds.generateEmbed(msg, tokens[tokens.length - 1]));
+    //     }
+    // } else if (command == "!/populateRoles") {
+    //     client.commands.get("populateRoles").execute(message, tokens);
+    // } else if (command == "!/viewRoles") {
+    //     client.commands.get("viewRoles").execute(message, tokens);
+    // } else if (command == "!/viewConfigs") {
+    //     client.commands.get("viewConfigs").execute(message, tokens);
+    // } else if (command == "!/adminRole") {
+    //     client.commands.get("adminRole").execute(message, tokens);
+    // } else if (command == "!/staffRole") {
+    //     if (message.mentions.roles.first() == undefined && tokens == undefined) {
+    //         console.log("staffrole");
+    //         channel.send(embeds.generateError(400));
+    //     } else if (message.mentions.roles.first() == undefined) {
+    //         if (roles.hasOwnProperty(tokens[0])) {
+    //             config.staffRole = tokens[0];
+    //             console.log("Staff role updated!");
+    //             channel.send("Staff role successfully updated.");
+    //             fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
+    //         } else {
+    //             channel.send(embeds.generateError(404));
+    //         }
+    //     } else {
+    //         let mentionedRole = message.mentions.roles.first();
+    //         config.staffRole = mentionedRole.id;
+    //         console.log("Staff role updated!");
+    //         channel.send("Staff role successfully updated.");
+    //         fs.writeFileSync(configPath + 'config.json', JSON.stringify(config, null, 4));
+    //     }
+    // } else if (command == "!/shutdown") {
+    //     client.commands.get("shutdown").execute(message, tokens);
+    // } else {
+    //     channel.send(embeds.generateError(404));
+    // }
 }
 
 // Staff/Admin only commands
