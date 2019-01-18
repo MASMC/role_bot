@@ -128,24 +128,30 @@ function handleReg(message) {
     let tokens;
     let firstSpace = content.indexOf(' ');
     if (firstSpace == -1) {
-        command = content;
+        command = content.substring(config.generalInvoke.length);;
     } else {
-        command = content.substring(0, firstSpace);
+        command = content.substring(config.generalInvoke.length, firstSpace);
         tokens = content.substring(++firstSpace).split(' ');
     }
 
     // Make sure to log the command!
     console.log(`${author.username} (${author.id}) invoked a command ${command} with tokens [${tokens}].`);
 
-    // Commands
-    if (command == "/help") {
-        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
-        msg.addField("/ping", "Pong!", true);
-        channel.send(msg);
-    } else if (command == "/ping") {
-        client.commands.get("ping").execute(message, tokens);
-    } else {
-        channel.send(embeds.generateError(404));
+    // Commands execution
+    if (!client.commands.has(command)) {
+        message.channel.send(embeds.generateError(404));
+        return;
+    }
+
+    try {
+        if (!client.commands.get(command).perm_lvl.includes("GENERAL")) {
+            message.channel.send(embeds.generateError(404));
+        } else {
+            client.commands.get(command).execute(message, tokens);
+        }
+    } catch (error) {
+        console.log(error);
+        message.channel.send(embeds.generateError(0));
     }
 }
 
