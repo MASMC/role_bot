@@ -2,7 +2,7 @@ module.exports = {
     name: "",
     description: "",
     perm_lvl: [""],
-    execute(message, tokens) {
+    async execute(message, tokens) {
 
     },
 };

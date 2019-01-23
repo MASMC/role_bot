@@ -2,7 +2,7 @@ module.exports = {
     name: "adminRole",
     description: "Sets the admin role for the server",
     perm_lvl: ["OWNER"],
-    execute(message, tokens) {
+    async execute(message, tokens) {
         if (message.mentions.roles.first() == undefined && tokens == undefined) {
             message.channel.send(embeds.generateError(400));
         } else if (message.mentions.roles.first() == undefined) {

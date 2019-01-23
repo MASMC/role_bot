@@ -2,7 +2,7 @@ module.exports = {
     name: "say",
     description: "Makes the bot say something!",
     perm_lvl: ["OWNER", "STAFF"],
-    execute(message, tokens) {
+    async execute(message, tokens) {
         if (tokens != undefined) {
             let msg = "";
             for (let i = 0; i < tokens.length; i++) {

@@ -2,7 +2,7 @@ module.exports = {
     name: "staffRole",
     description: "Sets the staff role for the server.",
     perm_lvl: ["OWNER"],
-    execute(message, tokens) {
+    async execute(message, tokens) {
         if (message.mentions.roles.first() == undefined && tokens == undefined) {            channel.send(embeds.generateError(400));
         } else if (message.mentions.roles.first() == undefined) {
             if (roles.hasOwnProperty(tokens[0])) {

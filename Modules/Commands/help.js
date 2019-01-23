@@ -2,7 +2,7 @@ module.exports = {
     name: "help",
     description: "Shows the help page for perm level commands",
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
-    execute(message, tokens) {
+    async execute(message, tokens) {
         // Check if tokens are defined, otherwise give an error
         if (tokens == undefined) {
             message.channel.send(embeds.generateError(400));
