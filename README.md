@@ -18,20 +18,20 @@ First up, we need you to (of course) download this code and put it somewhere saf
 
 Alright, so you've found this code on GitHub, I assume. If you didn't, please head there and download it, so you can show your support to the original author of the code. Here's a link: [MASMC's GitHub](http://github.com/MASMC/role_bot)
 
-Now that you're there, please obtain your fresh copy of the code, either by [cloning it with GitHub](https://github.com/MASMC/role_bot.git) (if you know how), or by [downloading the ZIP file](https://github.com/MASMC/role_bot/archive/master.zip). If you downloaded the ZIP, extract it's contents to a folder that you know the location of. I personally prefer `C:\Users\<username>\Documents\dev\bot\role_bot`, considering I am developing it on a near-daily basis, but you can put it wherever you want! Just make sure you know where it is.
+Now that you're there, please obtain your fresh copy of the code, either by [cloning it with GitHub](https://github.com/MASMC/role_bot.git) (if you know how), or by [downloading the ZIP file](https://github.com/MASMC/role_bot/archive/master.zip). If you downloaded the ZIP, extract its contents to a folder that you know the location of. I personally prefer `C:\Users\<username>\Documents\dev\bot\role_bot`, considering I am developing it on a near-daily basis, but you can put it wherever you want! Just make sure you know where it is.
 
-Now, on to downloading NodeJS to be able to actually do something with the bot! I think you'd like to be able to run it, of course, if you want to use it.
+Now, on to downloading NodeJS to be able to actually do something with the bot! I think you'd like to be able to run it, of course, if you want to use it. You can skip these next few steps if you know what you're doing with NodeJS, just follow the standard was of installing dependencies.
 
 --------------------
 
 First up here, download NodeJS, from their official website. Downloading it from elsewhere could make your computer very, very sick, and Role Bot doesn't like that at all! [Here's a link to the official website of NodeJS.](http://nodejs.org/)
 
-Once you have NodeJS installed, open your command line (or prompt, for Windows users). Make sure it's properly set up by running the command `node`. It should show up a screen with a little arrow on it, after the command. It will most likely just be the next line. If that happens, then you're good to go, just type in `.exit` to get back to where you were! If not, honestly, I can't help you. Sorry :<
+Once you have NodeJS installed, open your command line (or prompt, for Windows users). Make sure it's properly set up by running the command `node --version`. It should output the version number of your NodeJS install. If not, honestly, I can't help you. Sorry :<
 
 Now, if you've gotten here, you probably have NodeJS installed, so we are going to install the dependencies required for the bot to actually run. In your CLI (Short for Command Line Interface, or Command Prompt), go to the place where you put the extracted code. In my case, since I run on Windows, and keep my code in a certain place, I would type in `cd C:\Users\Admin\Documents\dev\bot\role_bot`. Just replace the command and path with whatever you need to, to get to your code.
-Once there, you'll need to install packages using the Node Package Manager. It's pretty simple to use, and, y'know what, I'll even give you the exact command you need! It is `npm install -s discord.js fs log-timestamp`. Simple, right?
+Once there, you'll need to install packages using the Node Package Manager. It's pretty simple to use, and, y'know what, I'll even give you the exact command you need! It is `npm install`. Simple, right?
 
-What? Oh, guess not. Well, quick explanation time! `npm` is short for "Node Package Manager". That's simple enough. `install` tells `npm` that we want to start installing stuff. `-s` is shorthand for `-save`, which tells `npm` that we want to save some additional stuff to a file that's in the directory. And lastly, `discord.js fs log-timestamp` are packages, separated by spaces. `discord.js` is the Discord API that I used to code the bot, `fs` is a default node package (I just re-install to ensure that it's in the working directory. Dev talk, for those who want it.), and `log-timestamp` is a package that adds timestamps before logging statements in the console. Pretty simple, once you think about it.
+What? Oh, guess not. Well, quick explanation time! `npm` is short for "Node Package Manager". That's simple enough. `install` tells `npm` that we want to start installing stuff. Just using `npm install` will automatically install the dependencies required to run the bot, with no extra input needed! The current dependency list can be found either in `package.json` or in `DEPENDENCY.md` (in case you don't know how to interpret JSON files).
 
 --------------------
 
@@ -75,14 +75,24 @@ Please ensure that when you add error codes, they stay in proper order (with num
 ```
 
 ### Adding new message functions
-All message functions belong in the handler file! Location: `/Modules/handler.js`
-Please attempt to keep the formatting of the file, and keep all functions self contained. If a global variable is needed, you're doing it wrong.
+All message functions are self-contained as module exports. They execute async functions to allow them to run without blocking up the message handler for fast guilds. Follow the template (DO NOT MODIFY IT, AT ALL) at `./Modules/Commands/template.js`, and ensure your command file names are descriptive and end with `.js` for them to be accepted by the handler.
+The permission list is an array of permission levels. Accepted levels are:
+- `OWNER`
+- `STAFF`
+- `GENERAL`
+It's preferred to keep them in this order as well, for readability.
+Adding requirements to the `async execute(message, tokens)` function in any command will break it. The command handler will only send the message, and the tokens it pulled from the message.
+`message` is the full message from the `discord.js` API
+`tokens` is an array of words, exluding the command. The array is split using spaces as the separator.
 
 ### Updating the README.md
-This shouldn't be touched, no PRs will be accepted that update the README file, beyond adding a name to the contributor list.
+This shouldn't be touched, no PRs will be accepted that update the `README.md` file, beyond adding a name to the contributor list.
 
 ### Command documentation
-Update this as you add commands. Once the github pages website is working, you will need to update that as well. For now, the file `COMMANDS.md` contain all the commands, with proper formatting.
+Update this as you add commands. Once the GitHub pages website is working, you will need to update that as well. For now, the file `COMMANDS.md` contain all the commands, with proper formatting.
+
+### Updating DEPENDENCY.md
+This shouldn't be touched unless you added a new dependency to run the bot. You should have also added your dependency to `package.json`, otherwise any PRs modifying this file will not be accepted.
 
 --------------------
 
@@ -95,6 +105,7 @@ That's it, why are you still scrolling?
 - The Coding Train
 - AltoPikachu
 - BitWolf
+- Quenn1599
 - Everyone else who helped with this project!
 
 --------------------
