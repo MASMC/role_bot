@@ -17,8 +17,7 @@ let Embedder = require("./Modules/embeds.js");
 global.embeds = new Embedder("");
 
 // Create the handler
-let Handler = require("./Modules/handler.js");
-global.handler = new Handler();
+global.handler = require("./Modules/new_handler.js");
 
 // When client is ready, do this!
 client.once('ready', () => {
