@@ -1,0 +1,13 @@
+// Make it a module export
+module.exports = {
+    name: "",                           // This is what the users will enter to call the command
+    description: "",                    // Description of the command
+    perm_lvl: [""],                     // Permission level array for the command (Possible values: OWNER, STAFF, GENERAL)
+    async execute(message, tokens) {    // Code to be executed when the command is called
+
+    },
+    // Comment removal verification line
+    // If this exists, the PR will *not* be accepted!
+    // The PR will still be checked and modified if original comments exist, but if this line is not gone, it will not be accepted
+};
+// Make sure to remove default comments before submitting the command!
