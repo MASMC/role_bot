@@ -13,7 +13,7 @@ module.exports = {
                 // Create the base embed
                 let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
 
-                // Search the command list to find OWNER perm_lvl commands
+                // Search the command list to find perm_lvl commands
                 let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
                 for (let file of commandFiles) {
                     let command = require(`./${file}`);
@@ -27,8 +27,22 @@ module.exports = {
                 // Output embed
                 message.channel.send(msg);
             } else {
-                message.channel.send(embeds.generateError(404));
-                return;
+                // Output the general help
+                let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
+
+                // Search command list to find permm_lvl commands
+                let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
+                for (let file of commandFiles) {
+                    let command = require(`./${file}`);
+
+                    // If perm_lvl == the first token, add to embed
+                    if (command.perm_lvl.includes("GENERAL")) {
+                        msg.addField(command.name, command.description);
+                    }
+                }
+
+                // Output embed
+                message.channel.send(msg);
             }
         }
     }
