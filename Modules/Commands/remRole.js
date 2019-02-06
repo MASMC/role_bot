@@ -1,29 +1,27 @@
 module.exports = {
-    name: "addRole",
-    description: "Adds a role to the user specified",
+    name: "removeRole",
+    description: "Removes a role from a user",
     perm_lvl: ["OWNER", "STAFF"],
     async execute(message, tokens) {
-        message.channel.send("WARNING: Command not fully implemented!\nExpect bugs in the command!");
-
-        // First up, store their role level, no matter if all tokens exist. >:3
+        // First up, store the staff role level
         let staffLvl = message.member.highestRole.calculatedPosition;
 
-        // Now check for correct number of tokens
+        // Check for token number
         if (tokens.length < 2) {
             message.channel.send(embeds.generateError(400)); // Error code: Invalid arguments
             return;
         }
 
         try {
-            // Let's grab the mentions and store them. The user MUST have "@" before, channel MUST have "#" before
+            // Let's grab mentions and store them
             let usrMention;
             let roleMention;
             if (message.mentions.roles != undefined && message.mentions.users != undefined) {
-                usrMention = message.mentions.users.first();
+                ustMention = message.mentions.users.first();
                 roleMention = message.mentions.roles.first();
             }
 
-            // Check permission level of the mentioned role
+            // Check perm levels
             if ((roleMention.position >= staffLvl || roleMention.position >= message.guild.member(client.user.id).highestRole.calculatedPosition)) {
                 message.channel.send(embeds.generateError(403)); // Error code: Unauthorized
             } else {
@@ -35,8 +33,8 @@ module.exports = {
                         }
                     }
                 }
-                message.guild.member(usrMention).addRole(roleMention, msg);
-                message.channel.send(`Role ${roleMention.name} added to ${usrMention.username} successfully!`);
+                message.guild.member(usrMention).removeRole(roleMention, msg);
+                message.channel.send(`Role ${roleMention.name} removed from ${usrMention.username} successfully!`;
             }
         } catch (e) {
             message.channel.send(embeds.generateError(400)); // Error code: Invalid arguments
