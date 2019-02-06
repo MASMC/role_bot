@@ -3,6 +3,5 @@
     "website": "http://MASMC.github.io/role_bot",
     "commandInvoke": "/",
     "adminRole": "",
-    "staffRole": "",
-    "secret": ""
+    "staffRole": ""
 }
