@@ -19,6 +19,6 @@ module.exports = {
             });
         });
         console.log("Roles populated.");
-        message.channel.send(`Done populating roles. Use \`${config.staffInvoke}viewRoles\` for confirmation of names.`);
+        message.channel.send(`Done populating roles. Use \`${config.commandInvoke}viewRoles\` for confirmation of names.`);
     },
 };
