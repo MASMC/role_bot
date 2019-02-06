@@ -39,29 +39,6 @@ client.on('message', (message) => {
     }
 });
 
-// GitHub webhook stuff. Ask the bot creator if you want a secret for the main repository.
-// He will help you set up your end of the webhook if you need help (and he's feeling well enough)
-try {
-    let http = require('http');
-    let crypto = require('crypto');
-
-    const exec = require('child_process').exec;
-
-    http.createServer(function (req, res) {
-        req.on('data', function(chunk) {
-            let sig = "sha1=" + crypto.createHmac('sha1', config.secret).update(chunk.toString()).digest('hex');
-
-            if (req.headers['x-hub-signature'] == sig) {
-                exec('git pull');
-            }
-        });
-
-        res.end();
-    }).listen(8080);
-} catch (e) {
-    console.log("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
-}
-
 /*
  * Credentials set-up
  * We do all file functions here at the end, if they aren't done in the file module.
@@ -76,6 +53,29 @@ function loadCreds() {
 
 // Declare credentials variable, and pass it off!
 const credentials = loadCreds();
+
+// GitHub webhook stuff. Ask the bot creator if you want a secret for the main repository.
+// He will help you set up your end of the webhook if you need help (and he's feeling well enough)
+try {
+    let http = require('http');
+    let crypto = require('crypto');
+
+    const exec = require('child_process').exec;
+
+    http.createServer(function (req, res) {
+        req.on('data', function(chunk) {
+            let sig = "sha1=" + crypto.createHmac('sha1', credentials.secret).update(chunk.toString()).digest('hex');
+
+            if (req.headers['x-hub-signature'] == sig) {
+                exec('git pull');
+            }
+        });
+
+        res.end();
+    }).listen(8080);
+} catch (e) {
+    console.log("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
+}
 
 // Make sure the client logs in, if auth_token is valid
 if (credentials.auth_token.length != 0 && process.argv.length == 2) {
