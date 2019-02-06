@@ -34,7 +34,7 @@ module.exports = {
                     }
                 }
                 message.guild.member(usrMention).removeRole(roleMention, msg);
-                message.channel.send(`Role ${roleMention.name} removed from ${usrMention.username} successfully!`;
+                message.channel.send(`Role ${roleMention.name} removed from ${usrMention.username} successfully!`);
             }
         } catch (e) {
             message.channel.send(embeds.generateError(400)); // Error code: Invalid arguments

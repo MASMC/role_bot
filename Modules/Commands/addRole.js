@@ -3,8 +3,6 @@ module.exports = {
     description: "Adds a role to the user specified",
     perm_lvl: ["OWNER", "STAFF"],
     async execute(message, tokens) {
-        message.channel.send("WARNING: Command not fully implemented!\nExpect bugs in the command!");
-
         // First up, store their role level, no matter if all tokens exist. >:3
         let staffLvl = message.member.highestRole.calculatedPosition;
 
