@@ -30,8 +30,10 @@ module.exports = {
             let command;
             let tokens;
             let firstSpace = content.indexOf(' ');
-            if (firstSpace == -1) command = message.content.substring(config.commandInvoke.length); // Tokens remains undefined if first space doesn't exist
-            else {
+            if (firstSpace == -1) {
+                command = message.content.substring(config.commandInvoke.length);
+                tokens = [];
+            } else {
                 command = message.content.substring(config.commandInvoke.length, firstSpace);
                 tokens = message.content.substring(firstSpace + 1).split(" ");                      // Split the string sent at each space (if tokens exist)
             }
