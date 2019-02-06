@@ -1,5 +1,5 @@
 // Log timestamp so we have date and time in the logs
-require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
+require("log-timestamp")(funcion() {return '('+new Date().toLocaleString() + ')'});
 
 // Import required APIs for bot to function
 global.Discord = require("discord.js");
