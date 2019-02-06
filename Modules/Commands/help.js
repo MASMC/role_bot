@@ -4,23 +4,25 @@ module.exports = {
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     async execute(message, tokens) {
         // Check if the first token is a valid permission level
-        if (tokens[0].toLowerCase() == "owner" || tokens[0].toLowerCase() == "staff" || tokens[0].toLowerCase() == "general") {
-            // Create the base embed
-            let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
+        if (tokens.length != 0) {
+            if (tokens[0].toLowerCase() == "owner" || tokens[0].toLowerCase() == "staff" || tokens[0].toLowerCase() == "general") {
+                // Create the base embed
+                let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
 
-            // Search the command list to find perm_lvl commands
-            let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
-            for (let file of commandFiles) {
-                let command = require(`./${file}`);
+                // Search the command list to find perm_lvl commands
+                let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
+                for (let file of commandFiles) {
+                    let command = require(`./${file}`);
 
-                // If perm_lvl == the first token, add to embed
-                if (command.perm_lvl.includes(tokens[0].toUpperCase())) {
-                    msg.addField(command.name, command.description);
+                    // If perm_lvl == the first token, add to embed
+                    if (command.perm_lvl.includes(tokens[0].toUpperCase())) {
+                        msg.addField(command.name, command.description);
+                    }
                 }
-            }
 
-            // Output embed
-            message.channel.send(msg);
+                // Output embed
+                message.channel.send(msg);
+            }
         } else {
             // Output the general help
             let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
