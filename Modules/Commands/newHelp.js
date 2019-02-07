@@ -1,6 +1,6 @@
 module.exports = {
     name: "newHelp",
-    description: "New help function (IN PROGRESS!),
+    description: "New help function (IN PROGRESS!)",
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     async execute(message, tokens) {
         let msg = generateEmbed("I'm here to help!", "00ffff");
