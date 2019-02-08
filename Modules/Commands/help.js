@@ -1,45 +1,20 @@
 module.exports = {
-    name: "help",
-    description: "Shows the help page for perm level commands",
+    name: "newHelp",
+    description: "New help function (IN PROGRESS!)",
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     async execute(message, tokens) {
-        // Check if the first token is a valid permission level
+        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
+        let helpLine = "Find help on the website:";
+
         if (tokens.length != 0) {
             if (tokens[0].toLowerCase() == "owner" || tokens[0].toLowerCase() == "staff" || tokens[0].toLowerCase() == "general") {
-                // Create the base embed
-                let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
-
-                // Search the command list to find perm_lvl commands
-                let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
-                for (let file of commandFiles) {
-                    let command = require(`./${file}`);
-
-                    // If perm_lvl == the first token, add to embed
-                    if (command.perm_lvl.includes(tokens[0].toUpperCase())) {
-                        msg.addField(command.name, command.description);
-                    }
-                }
-
-                // Output embed
-                message.channel.send(msg);
+                msg.addField(helpLine, `${config.website}/${tokens[0].toLowerCase()}.html`);
+            } else {
+                msg.addField(helpLine, "Website not able to be found using that flag!");
             }
         } else {
-            // Output the general help
-            let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
-
-            // Search command list to find permm_lvl commands
-            let commandFiles = fs.readdirSync("./Modules/Commands/").filter(file => file.endsWith(".js"));
-            for (let file of commandFiles) {
-                let command = require(`./${file}`);
-
-                // If perm_lvl == the first token, add to embed
-                if (command.perm_lvl.includes("GENERAL")) {
-                    msg.addField(command.name, command.description);
-                }
-            }
-
-            // Output embed
-            message.channel.send(msg);
+            msg.addField(helpLine, `${config.website}/general.html`);
         }
+        message.channel.send(msg);
     }
-}
+};
