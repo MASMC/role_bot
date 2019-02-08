@@ -3,7 +3,7 @@ module.exports = {
     description: "New help function (IN PROGRESS!)",
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     async execute(message, tokens) {
-        let msg = generateEmbed("I'm here to help!", "00ffff");
+        let msg = embeds.generateEmbed("I'm here to help!", "00ffff");
         let helpLine = "Find help on the website:";
 
         if (tokens != undefined) {
