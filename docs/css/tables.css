@@ -1,3 +1,25 @@
 table, th, td {
+    font-family: "Comic Sans MS", sans-serif;
+    padding: 5px;
     border: 1px solid black;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e1e1e1;
+}
+
+th {
+    background-color: #00ffff;
+    color: black;
+}
+
+#syntax {
+    font-family: monospace;
+    background-color: #f9f9f9;
+    text-align: center;
 }
