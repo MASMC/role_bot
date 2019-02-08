@@ -3,7 +3,7 @@ module.exports = {
     description: "Creates an embed using a description and a hex format colour (minus the 0x identifier).",
     perm_lvl: ["OWNER"],
     async execute(message, tokens) {
-        if (tokens == undefined) {
+        if (tokens.length == 0) {
             message.channel.send(embeds.generateError(400));
         } else if (tokens.length == 1) {
             message.channel.send(embeds.generateEmbed(tokens[0]));
