@@ -4,7 +4,7 @@ module.exports = {
     perm_lvl: ["OWNER", "STAFF", "GENERAL"],
     async execute(message, tokens) {
         let msg = generateEmbed("I'm here to help!", "00ffff");
-        let helpLine = "I'm here to help!";
+        let helpLine = "Find help on the website:";
 
         if (tokens != undefined) {
             if (tokens[0].toLowerCase() == "owner" || tokens[0].toLowerCase() == "staff" || tokens[0].toLowerCase() == "general") {
