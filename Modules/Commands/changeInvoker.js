@@ -12,7 +12,7 @@ module.exports = {
             }
             str = str.substring(0, str.length - 1);
             config.commandInvoke = str;
-            channel.message.send("Command invoker successfully updated!\nNew invoker: " + config.commandInvoke);
+            message.channel.send("Command invoker successfully updated!\nNew invoker: " + config.commandInvoke);
         }
     }
 };
