@@ -67,6 +67,7 @@ try {
             let sig = "sha1=" + crypto.createHmac('sha1', credentials.secret).update(chunk.toString()).digest('hex');
 
             if (req.headers['x-hub-signature'] == sig) {
+                client.channels.find("name", "github").send("Git repository push initiated, pulling data.");
                 exec('git pull');
             }
         });
