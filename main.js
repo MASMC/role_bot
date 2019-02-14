@@ -21,7 +21,7 @@ global.handler = require("./Modules/handler.js");
 
 // When client is ready, do this!
 client.once('ready', () => {
-    console.log("Client connected to Discord. Awaiting commands!");
+    console.log("\x1b[46mClient connected to Discord. Awaiting commands!\x1b[0m");
 });
 
 // Message handling, thrown to ./Modules/handler.js
@@ -83,10 +83,10 @@ if (credentials.auth_token.length != 0 && process.argv.length == 2) {
     client.login(credentials.auth_token);
 } else if (process.argv.length > 2) {
     if (process.argv[2] == "-t" || process.argv[2] == "--test") {
-        console.log("NODE TEST SUCCESS!");
+        console.log("\x1b[42mNODE TEST SUCCESS!\x1b[0m");
         process.exit();
     }
 } else {
-    console.log("Invalid auth token!");
+    console.log("\x1b[41mInvalid auth token!\x1b[0m");
     process.exit();
 }
