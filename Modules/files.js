@@ -5,20 +5,20 @@ class files
         // Load config folder
         global.config = this.updateConfigs();
         global.errors = this.updateErrors();
-        console.log("Configs loaded!");
+        logger.logStatus("Configs loaded!");
 
         // Load data folder
         global.blacklist = this.updateBlacklist();
         global.roles = this.updateRoles();
         global.strings = this.updateStrings();
-        console.log("Data loaded!");
+        logger.logStatus("Data loaded!");
 
         // Load commands
         client.commands = new Discord.Collection();
         updateCommands();
-        console.log("Commands loaded!");
+        logger.logStatus("Commands loaded!");
 
-        console.log("File system initialized successfully!");
+        logger.logSuccess("File system loaded successfully!");
     }
 
     updateStrings() {

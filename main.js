@@ -1,6 +1,10 @@
 // Log timestamp so we have date and time in the logs
 require("log-timestamp")(function() {return '('+new Date().toLocaleString() + ')'});
 
+// Logging tags, custom module for that good logging shit
+let Logger = require("./Modules/logging_tags.js");
+global.logger = new Logger();
+
 // Import required APIs for bot to function
 global.Discord = require("discord.js");
 global.fs = require("fs"); // fs is NOT required to be installed through node
@@ -21,7 +25,7 @@ global.handler = require("./Modules/handler.js");
 
 // When client is ready, do this!
 client.once('ready', () => {
-    console.log("\x1b[46mClient connected to Discord. Awaiting commands!\x1b[0m");
+    logger.logStatus("Client connected to Discord, awaiting commands!");
 });
 
 // Message handling, thrown to ./Modules/handler.js
@@ -30,7 +34,7 @@ client.on('message', (message) => {
     {
         if(message.content.substring(0,1) == "/" || message.content.substring(0,1) == "!") // If the blacklisted user attempts a command, log it.
         {
-            console.log("Blacklisted user attempted to use the bot!");
+            logger.logWarning("Blacklisted user attempted to access the bot!");
         }
     }
     else
@@ -75,7 +79,7 @@ try {
         res.end();
     }).listen(8080);
 } catch (e) {
-    console.log("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
+    logger.logUpdate("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
 }
 
 // Make sure the client logs in, if auth_token is valid
@@ -83,10 +87,10 @@ if (credentials.auth_token.length != 0 && process.argv.length == 2) {
     client.login(credentials.auth_token);
 } else if (process.argv.length > 2) {
     if (process.argv[2] == "-t" || process.argv[2] == "--test") {
-        console.log("\x1b[42mNODE TEST SUCCESS!\x1b[0m");
+        logger.logSuccess("Node Test Successful, compile passed.");
         process.exit();
     }
 } else {
-    console.log("\x1b[41mInvalid auth token!\x1b[0m");
+    logger.logError("Invalid auth token!");
     process.exit();
 }
