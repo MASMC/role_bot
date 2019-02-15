@@ -3,9 +3,10 @@
     "description": "A bot made for those without 2FA",
     "author": "MASMC <http://masmc.github.io/main/index.html> (AKA Gear#4460)",
     "dependencies": {
+        "discord-rich-presence": "0.0.8",
         "discord.js": "x.x.x",
-        "log-timestamp": "x.x.x",
-        "eslint": "x.x.x"
+        "eslint": "x.x.x",
+        "log-timestamp": "x.x.x"
     },
     "eslintConfig": {
         "env": {

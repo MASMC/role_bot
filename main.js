@@ -82,6 +82,21 @@ try {
     logger.logUpdate("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
 }
 
+// Discord RPC, because we want the bot to have it.
+try {
+    const richPresence = require("discord-rich-presence")(credentials.clientID);
+    richPresence.updatePresence({
+        state: 'Running',
+        details: 'Running',
+        startTimestamp: Date.now(),
+        endTimestamp: Date.now() + 1337,
+        instance: true
+    });
+} catch (e) {
+    // Let's assume they don't have it set up correctly, and toss them a nice error.
+    logger.logWarning("Invalid client ID! This is not a fatal error, it just means RPC won't work.");
+}
+
 // Make sure the client logs in, if auth_token is valid
 if (credentials.auth_token.length != 0 && process.argv.length == 2) {
     client.login(credentials.auth_token);
