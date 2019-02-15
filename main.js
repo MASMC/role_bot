@@ -23,9 +23,39 @@ global.embeds = new Embedder("");
 // Create the handler
 global.handler = require("./Modules/handler.js");
 
+/*
+ * Credentials set-up
+ * We do all file functions here at the end, if they aren't done in the file module.
+ *
+ * First, a function to load them so we don't offload the work to a seperate module
+ */
+function loadCreds() {
+    let data = fs.readFileSync("./Credentials/credentials.json");
+    let creds = JSON.parse(data);
+    return creds;
+}
+
+// Declare credentials variable, and pass it off!
+const credentials = loadCreds();
+
 // When client is ready, do this!
 client.once('ready', () => {
     logger.logStatus("Client connected to Discord, awaiting commands!");
+
+    // Discord RPC, because we want the bot to have it.
+    try {
+        const richPresence = require("discord-rich-presence")(credentials.clientID);
+        richPresence.updatePresence({
+            state: 'Running',
+            details: 'Running',
+            startTimestamp: Date.now(),
+            endTimestamp: Date.now() + 1337,
+            instance: true
+        });
+    } catch (e) {
+        // Let's assume they don't have it set up correctly, and toss them a nice error.
+        logger.logWarning("Invalid client ID! This is not a fatal error, it just means RPC won't work.");
+    }
 });
 
 // Message handling, thrown to ./Modules/handler.js
@@ -42,21 +72,6 @@ client.on('message', (message) => {
         handler.handle(message);
     }
 });
-
-/*
- * Credentials set-up
- * We do all file functions here at the end, if they aren't done in the file module.
- *
- * First, a function to load them so we don't offload the work to a seperate module
- */
-function loadCreds() {
-    let data = fs.readFileSync("./Credentials/credentials.json");
-    let creds = JSON.parse(data);
-    return creds;
-}
-
-// Declare credentials variable, and pass it off!
-const credentials = loadCreds();
 
 // GitHub webhook stuff. Ask the bot creator if you want a secret for the main repository.
 // He will help you set up your end of the webhook if you need help (and he's feeling well enough)
@@ -80,21 +95,6 @@ try {
     }).listen(8080);
 } catch (e) {
     logger.logUpdate("Webhook not setup. This is not fatal\n\tIt just means you'll have to manually update");
-}
-
-// Discord RPC, because we want the bot to have it.
-try {
-    const richPresence = require("discord-rich-presence")(credentials.clientID);
-    richPresence.updatePresence({
-        state: 'Running',
-        details: 'Running',
-        startTimestamp: Date.now(),
-        endTimestamp: Date.now() + 1337,
-        instance: true
-    });
-} catch (e) {
-    // Let's assume they don't have it set up correctly, and toss them a nice error.
-    logger.logWarning("Invalid client ID! This is not a fatal error, it just means RPC won't work.");
 }
 
 // Make sure the client logs in, if auth_token is valid
