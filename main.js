@@ -52,6 +52,7 @@ client.once('ready', () => {
             endTimestamp: Date.now() + 1337,
             instance: true
         });
+        logger.logUpdate("RPC set up and working.");
     } catch (e) {
         // Let's assume they don't have it set up correctly, and toss them a nice error.
         logger.logWarning("Invalid client ID! This is not a fatal error, it just means RPC won't work.");
