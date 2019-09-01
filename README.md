@@ -8,7 +8,7 @@
 
 ## About the Project
 
-Hi. My name is Mike. I'm the developer of this bot. I'd like to show you around for a bit. First up, I should *probably* teach you how to install it, and get it up and running for the first few seconds of its ~~short~~ life.
+Hi. My name is Gear. I'm the developer of this bot. I'd like to show you around for a bit. First up, I should *probably* teach you how to install it, and get it up and running for the first few seconds of its ~~short~~ life.
 *"That sounds easy enough!"* you might say, but in reality, it is. You just need a Discord development project, bot API key, NodeJS, and some other modules for that.
 
 Oh? What's that? You *don't* know how to get all that? Well, okay then, I'll have to show you!
